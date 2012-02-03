@@ -2,6 +2,7 @@ package play.templates.test
 
 import org.specs2.mutable._
 import play.templates._
+import play.api.templates.{Appendable, Format}
 
 import java.io._
 
@@ -85,8 +86,8 @@ object Helper {
 
     val compiler = {
 
-      def additionalClassPathEntry: Option[String] = Some(
-        Class.forName("play.templates.ScalaTemplateCompiler").getClassLoader.asInstanceOf[URLClassLoader].getURLs.map(_.getFile).mkString(":"))
+      def additionalClassPathEntry: Seq[String] =
+        Class.forName("play.templates.ScalaTemplateCompiler").getClassLoader.asInstanceOf[URLClassLoader].getURLs.map(_.getFile).map(_.toString)
 
       val settings = new Settings
       val scalaObjectSource = Class.forName("scala.ScalaObject").getProtectionDomain.getCodeSource
@@ -97,7 +98,13 @@ object Helper {
         val libPath = scalaObjectSource.getLocation
         val pathList = List(compilerPath, libPath)
         val origBootclasspath = settings.bootclasspath.value
-        settings.bootclasspath.value = ((origBootclasspath :: pathList) ::: additionalClassPathEntry.toList) mkString File.pathSeparator
+
+        def isTemplateCompiler(path: String): Boolean =
+          path.endsWith("templates/target/scala-2.9.1/classes/")
+
+        val fullClassPath = ((origBootclasspath :: pathList) ::: additionalClassPathEntry.toList) map (_.toString) filterNot isTemplateCompiler
+
+        settings.bootclasspath.value = fullClassPath mkString File.pathSeparator
         settings.outdir.value = generatedClasses.getAbsolutePath
       }
 

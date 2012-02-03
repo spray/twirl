@@ -471,8 +471,8 @@ package play.templates {
         Nil :+ """
 package """ :+ packageName :+ """
 
-import play.templates._
-import play.api.templates.TemplateMagic._
+import play.api.templates._
+import TemplateMagic._
 
 """ :+ additionalImports :+ """
 /*""" :+ root.comment.map(_.msg).getOrElse("") :+ """*/
@@ -675,38 +675,6 @@ object """ :+ name :+ """ extends BaseScalaTemplate[""" :+ resultType :+ """,For
         }
         case Source(code, NoPosition) => source.append(code)
         case s: Seq[any] => serialize(s, source, positions, lines)
-      }
-    }
-
-  }
-
-  /* ------ */
-
-  trait Appendable[T] {
-    def +(other: T): T
-    override def equals(x: Any): Boolean = super.equals(x)
-    override def hashCode() = super.hashCode()
-  }
-
-  trait Format[T <: Appendable[T]] {
-    def raw(text: String): T
-    def escape(text: String): T
-  }
-
-  case class BaseScalaTemplate[T <: Appendable[T], F <: Format[T]](format: F) {
-
-    def _display_(o: Any)(implicit m: Manifest[T]): T = {
-      o match {
-        case escaped if escaped != null && escaped.getClass == m.erasure => escaped.asInstanceOf[T]
-        case () => format.raw("")
-        case None => format.raw("")
-        case Some(v) => _display_(v)
-        case xml: scala.xml.NodeSeq => format.raw(xml.toString)
-        case escapeds: TraversableOnce[_] => escapeds.foldLeft(format.raw(""))(_ + _display_(_))
-        case escapeds: Array[_] => escapeds.foldLeft(format.raw(""))(_ + _display_(_))
-        case string: String => format.escape(string)
-        case v if v != null => _display_(v.toString)
-        case _ => format.raw("")
       }
     }
 

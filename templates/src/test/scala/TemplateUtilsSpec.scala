@@ -3,6 +3,7 @@ package play.templates.test
 import org.specs2.mutable._
 
 import play.templates._
+import play.api.templates.{Appendable,Format}
 
 object TemplateUtilsSpec extends Specification {
 
