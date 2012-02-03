@@ -68,7 +68,7 @@ object HtmlFormat extends Format[Html] {
   /**
    * Creates a safe (escaped) HTML fragment.
    */
-  def escape(text: String) = sys.error("NYI")//Html(org.apache.commons.lang.StringEscapeUtils.escapeHtml(text))
+  def escape(text: String) = Html(org.apache.commons.lang.StringEscapeUtils.escapeHtml(text))
 
 }
 
@@ -177,6 +177,6 @@ object XmlFormat extends Format[Xml] {
   /**
    * Creates an escaped XML fragment.
    */
-  def escape(text: String) = sys.error("NYI")//Xml(org.apache.commons.lang.StringEscapeUtils.escapeXml(text))
+  def escape(text: String) = Xml(org.apache.commons.lang.StringEscapeUtils.escapeXml(text))
 
 }
