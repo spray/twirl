@@ -6,7 +6,10 @@ object TemplateBuild extends Build {
 
   lazy val root =
     Project("root", file("."))
-      .aggregate(templates, sbtPlugin)
+      .aggregate(templateApi, templates, sbtPlugin)
+
+  lazy val templateApi =
+    Project("template-api", file("template-api"))
 
   lazy val templates =
     Project("templates", file("templates"))
@@ -14,6 +17,7 @@ object TemplateBuild extends Build {
         libraryDependencies ++= Seq(scalaIO, Test.specs),
         libraryDependencies <+= scalaVersion(scalaCompiler)
       )
+      .dependsOn(templateApi % "test")
 
   lazy val sbtPlugin =
     Project("sbt-plugin", file("sbt-plugin"))
