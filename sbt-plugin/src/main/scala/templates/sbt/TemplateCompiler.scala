@@ -32,22 +32,20 @@ object TemplateCompiler {
         val exts = templateTypes(extension)
         (p, extension, exts._1, exts._2)
     }
-    (generatedDir ** "*.template.scala").get.map(GeneratedSource(_)).foreach(_.sync())
-    try {
 
+    // deletes old artifacts
+    (generatedDir ** "*.template.scala").get.map(GeneratedSource(_)).foreach(_.sync())
+
+    try {
       (sourceDirectory ** "*.scala.*").get.collect(templateExt).foreach {
         case (template, extension, t, format) =>
-          val res =
-            ScalaTemplateCompiler.compile(
-              template,
-              sourceDirectory,
-              generatedDir,
-              t,
-              format,
-              additionalImports.map("import " + _.replace("%format%", extension)).mkString("\n"))
-
-          println("res: " + res)
-          res
+          ScalaTemplateCompiler.compile(
+            template,
+            sourceDirectory,
+            generatedDir,
+            t,
+            format,
+            additionalImports.map("import " + _.replace("%format%", extension)).mkString("\n"))
       }
     } catch {
       case TemplateCompilationError(source, message, line, column) => {
