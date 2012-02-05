@@ -30,6 +30,10 @@ object TemplateBuild extends Build {
   lazy val sbtPlugin =
     Project("sbt-plugin", file("sbt-plugin"))
       .settings(generalSettings: _*)
+      .settings(
+        Keys.sbtPlugin := true
+      )
+      .dependsOn(templates)
 
   lazy val generalSettings = seq(
     scalacOptions ++= Seq("-unchecked", "-encoding", "utf8", "-deprecation")
