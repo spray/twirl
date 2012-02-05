@@ -43,8 +43,10 @@ object TemplateSettings {
     (managedSourceDirectories in Compile) <+= target in compileTemplates,
     (compile in Compile) <<= (compile in Compile).dependsOn(compileTemplates),
     templatesReportErrors <<=
-      (compile in Compile, streamsManager, streams).mapR(TemplateTasks.improveErrorMsg)
-        .triggeredBy(compile in Compile),
+      (compile in Compile, streamsManager)
+        .mapR(TemplateTasks.improveErrorMsg)
+        .triggeredBy(compile in Compile, compileTemplates),
+    TemplateTasks.addProblemReporterTo(templatesReportErrors),
 
     // watch sources support
     includeFilter in compileTemplates := "*.scala.*",

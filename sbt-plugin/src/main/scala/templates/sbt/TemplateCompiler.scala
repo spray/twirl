@@ -19,6 +19,7 @@
 package templates.sbt
 
 import sbt._
+import xsbti.Severity.Error
 import java.io.File
 
 object TemplateCompiler {
@@ -49,22 +50,19 @@ object TemplateCompiler {
       }
     } catch {
       case TemplateCompilationError(source, message, line, column) => {
-        throw TemplateCompilationException(source, message, line, column - 1)
+        throw new TemplateTasks.ProblemException(
+          SbtUtils.problem(message,
+                           Error,
+                           SbtUtils.position(
+                             Some(source.getCanonicalPath),
+                             Some(line),
+                             Some(column)
+                           ))
+        )
       }
       case e => throw e
     }
 
     (generatedDir ** "*.template.scala").get.map(_.getAbsoluteFile)
-  }
-
-  case class TemplateCompilationException(source: File, message: String, atLine: Int, column: Int) extends Exception(
-    "Compilation error: " + message) {
-    def line = Some(atLine)
-
-    def position = Some(column)
-
-    def input = Some(scalax.file.Path(source))
-
-    def sourceName = Some(source.getAbsolutePath)
   }
 }
