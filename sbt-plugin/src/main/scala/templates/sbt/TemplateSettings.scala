@@ -32,12 +32,15 @@ object TemplateSettings {
       case "xml" => ("play.api.templates.Xml", "play.api.templates.XmlFormat")
     },
     templatesImport in Global := Nil,
-    templatesSources <<= (sourceDirectory in Compile) / "templates",
-    templatesTarget <<= (sourceManaged in Compile) / "generated-template-sources",
-    compileTemplates <<= (templatesSources, templatesTarget, templatesTypes, templatesImport) map TemplateCompiler.compile,
+    sourceDirectory in compileTemplates <<= (sourceDirectory in Compile) / "templates",
+    target in compileTemplates <<= (sourceManaged in Compile) / "generated-template-sources",
+    compileTemplates <<= (sourceDirectory in compileTemplates,
+                          target in compileTemplates,
+                          templatesTypes,
+                          templatesImport) map TemplateCompiler.compile,
 
     (sourceGenerators in Compile) <+= compileTemplates,
-    (managedSourceDirectories in Compile) <+= templatesTarget,
+    (managedSourceDirectories in Compile) <+= target in compileTemplates,
     (compile in Compile) <<= (compile in Compile).dependsOn(compileTemplates),
     templatesReportErrors <<=
       (compile in Compile, streamsManager, streams).mapR(TemplateTasks.improveErrorMsg)
@@ -46,7 +49,7 @@ object TemplateSettings {
     // watch sources support
     includeFilter in compileTemplates := "*.scala.*",
     excludeFilter in compileTemplates <<= excludeFilter in Global,
-    watch(templatesSources, includeFilter in compileTemplates, excludeFilter in compileTemplates)
+    watch(sourceDirectory in compileTemplates, includeFilter in compileTemplates, excludeFilter in compileTemplates)
   )
 
   def watch(sourceDirKey: SettingKey[File], filterKey: SettingKey[FileFilter], excludeKey: SettingKey[FileFilter]) =
