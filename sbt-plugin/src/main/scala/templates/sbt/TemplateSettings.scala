@@ -46,10 +46,11 @@ object TemplateSettings {
     // watch sources support
     includeFilter in compileTemplates := "*.scala.*",
     excludeFilter in compileTemplates <<= excludeFilter in Global,
-    watchSources in compileTemplates <<= (templatesSources, includeFilter in compileTemplates, excludeFilter in compileTemplates) map { (sourceDir, filt, excl) =>
-      sourceDir.descendentsExcept(filt, excl).get
-    },
-
-    watchSources <++= watchSources in compileTemplates
+    watch(templatesSources, includeFilter in compileTemplates, excludeFilter in compileTemplates)
   )
+
+  def watch(sourceDirKey: SettingKey[File], filterKey: SettingKey[FileFilter], excludeKey: SettingKey[FileFilter]) =
+    watchSources <++= (sourceDirKey, filterKey, excludeKey) map descendents
+  def descendents(sourceDir: File, filt: FileFilter, excl: FileFilter) =
+    sourceDir.descendentsExcept(filt, excl).get
 }
