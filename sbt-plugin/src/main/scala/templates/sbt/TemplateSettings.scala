@@ -41,6 +41,15 @@ object TemplateSettings {
     (compile in Compile) <<= (compile in Compile).dependsOn(compileTemplates),
     templatesReportErrors <<=
       (compile in Compile, streamsManager, streams).mapR(TemplateTasks.improveErrorMsg)
-        .triggeredBy(compile in Compile)
+        .triggeredBy(compile in Compile),
+
+    // watch sources support
+    includeFilter in compileTemplates := "*.scala.*",
+    excludeFilter in compileTemplates <<= excludeFilter in Global,
+    watchSources in compileTemplates <<= (templatesSources, includeFilter in compileTemplates, excludeFilter in compileTemplates) map { (sourceDir, filt, excl) =>
+      sourceDir.descendentsExcept(filt, excl).get
+    },
+
+    watchSources <++= watchSources in compileTemplates
   )
 }
