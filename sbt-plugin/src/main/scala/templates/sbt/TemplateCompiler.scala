@@ -1,4 +1,4 @@
-/* Copyright 2012 Typesafe (http://www.typesafe.com)
+/* Copyright 2012 Typesafe (http://www.typesafe.com), Johannes Rudolph
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
