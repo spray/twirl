@@ -3,7 +3,7 @@ package templates.sbt
 import java.io.File
 import sbt._
 
-object TemplateKeys {
+trait TemplateKeys {
   val templatesImport = SettingKey[Seq[String]]("play-templates-imports", "Additional imports for the templates")
   val templatesTypes = SettingKey[PartialFunction[String, (String, String)]]("play-templates-formats", "Defined template formats")
 
