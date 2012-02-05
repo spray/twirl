@@ -10,12 +10,14 @@ object TemplateBuild extends Build {
 
   lazy val templateApi =
     Project("template-api", file("template-api"))
+      .settings(generalSettings: _*)
       .settings(
         libraryDependencies += commonsLang
       )
 
   lazy val templates =
     Project("templates", file("templates"))
+      .settings(generalSettings: _*)
       .settings(
         libraryDependencies ++= Seq(
           scalaIO,
@@ -27,6 +29,11 @@ object TemplateBuild extends Build {
 
   lazy val sbtPlugin =
     Project("sbt-plugin", file("sbt-plugin"))
+      .settings(generalSettings: _*)
+
+  lazy val generalSettings = seq(
+    scalacOptions ++= Seq("-unchecked", "-encoding", "utf8", "-deprecation")
+  )
 }
 
 object Dependencies {
