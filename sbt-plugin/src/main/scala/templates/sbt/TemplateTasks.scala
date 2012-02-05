@@ -10,11 +10,10 @@ object TemplateTasks {
 
   def improveErrorMsg(compileR: Result[inc.Analysis], streamManagerR: Result[Streams], streams: Result[TaskStreams]): inc.Analysis = compileR match {
     case Inc(incomplete) =>
-      //sys.error("Big problem with: "+)
       val reporter = new LoggerReporter(10, streams.toEither.right.get.log)
       val probs = TemplateProblems.getProblems(incomplete, streamManagerR.toEither.right.get)
       probs.foreach { p =>
-          reporter.display(p.position, p.message, p.severity)
+        reporter.display(p.position, p.message, p.severity)
       }
 
       throw ProblemException(probs.toArray)

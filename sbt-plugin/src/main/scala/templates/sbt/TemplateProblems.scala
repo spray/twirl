@@ -15,111 +15,71 @@
  * This is almost verbatim copied from Play20 sbt-plugin
  * https://github.com/playframework/Play20/raw/217271a2d6834b2abefa8eff070ec680c7956a99/framework/src/sbt-plugin/src/main/scala/PlayReloader.scala
  *
- * I added pointer space reporting and line content.
+ * JR: I refactored this stuff heavily wrt position mapping and for use of SbtUtils
  */
 
 package templates.sbt
+
+import java.io.File
 
 import sbt._
 import Keys._
 
 object TemplateProblems {
-  def remapProblemForGeneratedSources(problem: xsbti.Problem) = {
+  def remapProblemForGeneratedSources(problem: xsbti.Problem) =
     problem.position.sourceFile.collect {
-
       // Templates
       case play.templates.MaybeGeneratedSource(generatedSource) => {
-        new xsbti.Problem {
-          def message = problem.message
+        def remapPosition(file: File, line: Int, column: Int, offset: Int): (File, Int) =
+          (generatedSource.source.get,
+           generatedSource.mapPosition(offset))
 
-          def position = new xsbti.Position {
-            def line = {
-              problem.position.line.map(l => generatedSource.mapLine(l.asInstanceOf[Int])).map(l => xsbti.Maybe.just(l.asInstanceOf[java.lang.Integer])).getOrElse(xsbti.Maybe.nothing[java.lang.Integer])
-            }
+        SbtUtils.problem(
+          problem.message,
+          problem.severity,
+          SbtUtils.mapPosition(problem.position)(remapPosition)
+        )
+      }
+    }.getOrElse(problem)
 
-            def lineContent = IO.readLines(sourceFile.get)(line.get - 1)
+  def getProblems(incomplete: Incomplete, streamsManager: Streams): Seq[xsbti.Problem] =
+    (Compiler.allProblems(incomplete) ++ extractJavaCErrors(incomplete, streamsManager))
+      .map(remapProblemForGeneratedSources)
 
-            def offset = xsbti.Maybe.nothing[java.lang.Integer]
+  def extractJavaCErrors(incomplete: Incomplete, streamsManager: Streams): Seq[xsbti.Problem] =
+    Incomplete.linearize(incomplete).filter(i => i.node.isDefined && i.node.get.isInstanceOf[ScopedKey[_]]).flatMap { i =>
+      val JavacError = """\[error\]\s*(.*[.]java):(\d+):\s*(.*)""".r
+      val JavacErrorInfo = """\[error\]\s*([a-z ]+):(.*)""".r
+      val JavacErrorPosition = """\[error\](\s*)\^\s*""".r
 
-            def pointer = {
-              problem.position.offset.map {
-                offset =>
-                  generatedSource.mapPosition(offset.asInstanceOf[Int]) - IO.read(generatedSource.source.get).split('\n').take(problem.position.line.map(l => generatedSource.mapLine(l.asInstanceOf[Int])).get - 1).mkString("\n").size - 1
-              }.map {
-                p =>
-                  xsbti.Maybe.just(p.asInstanceOf[java.lang.Integer])
-              }.getOrElse(xsbti.Maybe.nothing[java.lang.Integer])
-            }
-
-            def pointerSpace = xsbti.Maybe.just(" " * pointer.get)
-
-            def sourceFile = xsbti.Maybe.just(generatedSource.source.get)
-
-            def sourcePath = xsbti.Maybe.just(sourceFile.get.getCanonicalPath)
+      Some {
+        var first: (Option[(String, String, String)], Option[Int]) = (None, None)
+        var parsed: (Option[(String, String, String)], Option[Int]) = (None, None)
+        Output.lastLines(i.node.get.asInstanceOf[ScopedKey[_]], streamsManager).map(_.replace(scala.Console.RESET, "")).map(_.replace(scala.Console.RED, "")).collect {
+          case JavacError(file, line, message) => parsed = Some((file, line, message)) -> None
+          case JavacErrorInfo(key, message) => parsed._1.foreach {
+            o =>
+              parsed = Some((parsed._1.get._1, parsed._1.get._2, parsed._1.get._3 + " [" + key.trim + ": " + message.trim + "]")) -> None
           }
-
-          def severity = problem.severity
+          case JavacErrorPosition(pos) => {
+            parsed = parsed._1 -> Some(pos.size)
+            if (first == (None, None)) {
+              first = parsed
+            }
+          }
         }
-      }
+        first
+      }.collect {
+        case (Some(error), maybePosition) =>
+          val position =
+            SbtUtils.position(
+              path = Some(error._1),
+              line = Some(error._2.toInt),
+              column = maybePosition.map(_ - 1))
 
-    }.getOrElse {
-      problem
+          SbtUtils.problem(message  = error._3,
+                           severity = xsbti.Severity.Error,
+                           position = position)
+      }
     }
-
-  }
-
-  def getProblems(incomplete: Incomplete, streamsManager: Streams): Seq[xsbti.Problem] = {
-    (Compiler.allProblems(incomplete) ++ {
-      Incomplete.linearize(incomplete).filter(i => i.node.isDefined && i.node.get.isInstanceOf[ScopedKey[_]]).flatMap {
-        i =>
-          val JavacError = """\[error\]\s*(.*[.]java):(\d+):\s*(.*)""".r
-          val JavacErrorInfo = """\[error\]\s*([a-z ]+):(.*)""".r
-          val JavacErrorPosition = """\[error\](\s*)\^\s*""".r
-
-          //Project.evaluateTask(streamsManager, state).get.toEither.right.toOption.map { streamsManager =>
-          Some {
-            var first: (Option[(String, String, String)], Option[Int]) = (None, None)
-            var parsed: (Option[(String, String, String)], Option[Int]) = (None, None)
-            Output.lastLines(i.node.get.asInstanceOf[ScopedKey[_]], streamsManager).map(_.replace(scala.Console.RESET, "")).map(_.replace(scala.Console.RED, "")).collect {
-              case JavacError(file, line, message) => parsed = Some((file, line, message)) -> None
-              case JavacErrorInfo(key, message) => parsed._1.foreach {
-                o =>
-                  parsed = Some((parsed._1.get._1, parsed._1.get._2, parsed._1.get._3 + " [" + key.trim + ": " + message.trim + "]")) -> None
-              }
-              case JavacErrorPosition(pos) => {
-                parsed = parsed._1 -> Some(pos.size)
-                if (first ==(None, None)) {
-                  first = parsed
-                }
-              }
-            }
-            first
-          }.collect {
-            case (Some(error), maybePosition) => new xsbti.Problem {
-              def message = error._3
-
-              def position = new xsbti.Position {
-                def line = xsbti.Maybe.just(error._2.toInt)
-
-                def lineContent = IO.readLines(sourceFile.get)(line.get - 1)
-
-                def offset = xsbti.Maybe.nothing[java.lang.Integer]
-
-                def pointer = maybePosition.map(pos => xsbti.Maybe.just((pos - 1).asInstanceOf[java.lang.Integer])).getOrElse(xsbti.Maybe.nothing[java.lang.Integer])
-
-                def pointerSpace = xsbti.Maybe.just(" " * pointer.get)
-
-                def sourceFile = xsbti.Maybe.just(file(error._1))
-
-                def sourcePath = xsbti.Maybe.just(error._1)
-              }
-
-              def severity = xsbti.Severity.Error
-            }
-          }
-
-      }
-    }).map(remapProblemForGeneratedSources)
-  }
-
 }

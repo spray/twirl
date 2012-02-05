@@ -30,9 +30,7 @@ object TemplateCompiler {
       case p if templateTypes.isDefinedAt(p.name.split('.').last) =>
         val extension = p.name.split('.').last
         val exts = templateTypes(extension)
-        val res = (p, extension, exts._1, exts._2)
-        println("Found " + res)
-        res
+        (p, extension, exts._1, exts._2)
     }
     (generatedDir ** "*.template.scala").get.map(GeneratedSource(_)).foreach(_.sync())
     try {
