@@ -33,17 +33,19 @@ object TemplateTasks {
   }
 
   lazy val reportErrors = TaskKey[Unit]("report-errors")
-  def addProblemReporterTo[T: Manifest](key: TaskKey[T]): Setting[_] =
+  def addProblemReporterTo[T: Manifest](key: TaskKey[T], filter: File => Boolean = _ => true): Setting[_] =
     reportErrors.asInstanceOf[TaskKey[T]] in key <<=
-      (key, streams).mapR(reportProblems)
+      (key, streams).mapR(reportProblems(filter))
                     .triggeredBy(key)
 
-  def reportProblems[T](result: Result[T], streams: Result[TaskStreams]): T = result match {
+  def reportProblems[T](filter: File => Boolean)(result: Result[T], streams: Result[TaskStreams]): T = result match {
     case Inc(incomplete) =>
       val reporter = new LoggerReporter(10, streams.toEither.right.get.log)
-      Compiler.allProblems(incomplete).foreach { p =>
-        reporter.display(p.position, p.message, p.severity)
-      }
+      Compiler.allProblems(incomplete)
+        .filter(_.position.sourceFile.exists(filter))
+        .foreach { p =>
+          reporter.display(p.position, p.message, p.severity)
+        }
 
       throw incomplete
     case Value(v) => v

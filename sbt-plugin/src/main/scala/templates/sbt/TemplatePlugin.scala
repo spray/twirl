@@ -45,7 +45,7 @@ object TemplatePlugin extends Plugin {
         (compile in Compile, streamsManager)
           .mapR(TemplateTasks.improveErrorMsg)
           .triggeredBy(compile in Compile, compileTemplates),
-      TemplateTasks.addProblemReporterTo(templatesReportErrors),
+      TemplateTasks.addProblemReporterTo(templatesReportErrors, templatesOrTemplateSources),
 
       // watch sources support
       includeFilter in compileTemplates := "*.scala.*",
@@ -53,6 +53,10 @@ object TemplatePlugin extends Plugin {
       watch(sourceDirectory in compileTemplates, includeFilter in compileTemplates, excludeFilter in compileTemplates)
     )
   }
+
+  lazy val errorExtensions = Seq(".scala.xml", ".scala.html", ".scala.txt", ".template.scala")
+  lazy val templatesOrTemplateSources: File => Boolean =
+    file => errorExtensions.exists(file.getName.endsWith)
 
   def watch(sourceDirKey: SettingKey[File], filterKey: SettingKey[FileFilter], excludeKey: SettingKey[FileFilter]) =
     watchSources <++= (sourceDirKey, filterKey, excludeKey) map descendents
