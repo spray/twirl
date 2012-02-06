@@ -50,7 +50,9 @@ object TemplatePlugin extends Plugin {
       // watch sources support
       includeFilter in compileTemplates := "*.scala.*",
       excludeFilter in compileTemplates <<= excludeFilter in Global,
-      watch(sourceDirectory in compileTemplates, includeFilter in compileTemplates, excludeFilter in compileTemplates)
+      watch(sourceDirectory in compileTemplates, includeFilter in compileTemplates, excludeFilter in compileTemplates),
+
+      libraryDependencies += "cc.spray" %% "splay-templates-api" % "0.5.0-SNAPSHOT"
     )
   }
 

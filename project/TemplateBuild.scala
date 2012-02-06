@@ -12,6 +12,7 @@ object TemplateBuild extends Build {
     Project("template-api", file("template-api"))
       .settings(generalSettings: _*)
       .settings(
+        name := "splay-template-api",
         libraryDependencies += commonsLang
       )
 
@@ -19,6 +20,7 @@ object TemplateBuild extends Build {
     Project("templates", file("templates"))
       .settings(generalSettings: _*)
       .settings(
+        name := "splay-template-compiler",
         libraryDependencies ++= Seq(
           scalaIO,
           Test.specs
@@ -31,12 +33,32 @@ object TemplateBuild extends Build {
     Project("sbt-plugin", file("sbt-plugin"))
       .settings(generalSettings: _*)
       .settings(
+        name := "splay-template-plugin",
         Keys.sbtPlugin := true
       )
       .dependsOn(templates)
 
   lazy val generalSettings = seq(
+    organization := "cc.spray",
     scalacOptions ++= Seq("-unchecked", "-encoding", "utf8", "-deprecation")
+  ) ++ publishSettings
+
+  lazy val publishSettings = seq(
+    version := "0.5.0-SNAPSHOT",
+
+    // publishing
+    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+    publishMavenStyle := true,
+    publishTo <<= version { version =>
+      Some {
+        "spray repo" at {
+          // public uri is repo.spray.cc, we use an SSH tunnel to the nexus here
+          "http://localhost:42424/content/repositories/" + {
+            if (version.trim.endsWith("SNAPSHOT")) "snapshots/" else"releases/"
+          }
+        }
+      }
+    }
   )
 }
 
