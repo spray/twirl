@@ -1,0 +1,6 @@
+- add stack trace position remapping
+- fix template package naming (see https://github.com/playframework/Play20/pull/108)
+- add better package statements in generated file (package abc.def; package html)
+- warn or remap file names with `-` in them because they can't be compiled currently
+- possibility to change context (html/xml/txt)
+- JS context
