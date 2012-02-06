@@ -52,9 +52,9 @@ __ `Play Scala Templates`_
 Known Issues
 ------------
 
- - Scala compilation errors in templates will be shown twice. Once as the verbatim error message
-   falling out of the compiler and once properly reported for the template file.
-   Probably needs a fix on the sbt side.
+- Scala compilation errors in templates will be shown twice. Once as the verbatim error message
+  falling out of the compiler and once properly reported for the template file.
+  Probably needs a fix on the sbt side.
 
 License
 -------
