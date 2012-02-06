@@ -1,5 +1,5 @@
-Templates
-=========
+Splay Templates
+===============
 
 This project is a remix of `Play Scala Templates`_. We extracted the template compiler and
 corresponding sbt-plugin methods to provide an isolated version of templates which
@@ -7,7 +7,7 @@ can be used without play.
 
 Play's Scala Templates is a novel templating engine which uses an idiomatic approach to
 enable type-safe templating with seamless Scala code support. Each template is just a function
-from input values to the output format text.
+from input values to the formatted output text.
 
 Installation
 ------------
