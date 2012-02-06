@@ -19,7 +19,6 @@ import sbt._
 import Keys._
 
 import java.io.File
-import play.templates._
 
 object TemplatePlugin extends Plugin {
 
@@ -52,7 +51,7 @@ object TemplatePlugin extends Plugin {
       excludeFilter in compileTemplates <<= excludeFilter in Global,
       watch(sourceDirectory in compileTemplates, includeFilter in compileTemplates, excludeFilter in compileTemplates),
 
-      libraryDependencies += "cc.spray" %% "splay-templates-api" % "0.5.0-SNAPSHOT"
+      libraryDependencies += "cc.spray" %% "splay-template-api" % "0.5.0-SNAPSHOT"
     )
   }
 
