@@ -1,0 +1,1 @@
+../../sbt-plugin/src/main/scala/templates/sbt/TemplatePlugin.scala
