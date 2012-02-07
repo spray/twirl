@@ -16,6 +16,7 @@ All you have to do is to add an sbt-plugin to your project. Add the following de
 `project/plugins.sbt` file:
 
 ::
+
   resolvers += "Spray repo" at "http://repo.spray.cc/"
 
   addSbtPlugin("cc.spray" % "templates" % "0.5.0")
