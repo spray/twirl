@@ -25,15 +25,18 @@ import twirl.compiler._
 
 object TemplateCompiler {
 
-  def compile(sourceDirectory: File, generatedDir: File, templateTypes: PartialFunction[String, (String, String)],
+  def compile(sourceDirectory: File,
+              generatedDir: File,
+              templateTypes: PartialFunction[String, TemplateType],
               additionalImports: Seq[String]) = {
+
     IO.createDirectory(generatedDir)
 
-    val templateExt: PartialFunction[File, (File, String, String, String)] = {
+    val templateExt: PartialFunction[File, (File, String, TemplateType)] = {
       case p if templateTypes.isDefinedAt(p.name.split('.').last) =>
         val extension = p.name.split('.').last
-        val exts = templateTypes(extension)
-        (p, extension, exts._1, exts._2)
+        val templateType = templateTypes(extension)
+        (p, extension, templateType)
     }
 
     // deletes old artifacts
@@ -41,13 +44,13 @@ object TemplateCompiler {
 
     try {
       (sourceDirectory ** "*.scala.*").get.collect(templateExt).foreach {
-        case (template, extension, t, format) =>
+        case (template, extension, TemplateType(resultType, formatterType)) =>
           TwirlCompiler.compile(
             template,
             sourceDirectory,
             generatedDir,
-            t,
-            format,
+            resultType,
+            formatterType,
             additionalImports.map("import " + _.replace("%format%", extension)).mkString("\n"))
       }
     } catch {

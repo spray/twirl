@@ -1,4 +1,4 @@
-/* Copyright 2012 Johannes Rudolph
+/* Copyright 2012 Johannes Rudolph, Mathias Doenitz
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,16 @@
  * limitations under the License.
  */
 
-package twirl.sbt
+package twirl
 
-import java.io.File
-import sbt._
+package object sbt {
 
-trait TemplateKeys {
-  val templatesImport = SettingKey[Seq[String]]("templates-imports", "Additional imports for the templates")
-  val templatesTypes = SettingKey[PartialFunction[String, (String, String)]]("templates-formats", "Defined template formats")
+  type TemplateTypeMap = PartialFunction[String, TemplateType]
 
-  val compileTemplates = TaskKey[Seq[File]]("compile-templates", "Compile scala templates into scala files")
-  val templatesReportErrors = TaskKey[inc.Analysis]("templates-report-errorrs", "Reports template errors")
+}
+
+package sbt {
+
+  case class TemplateType(resultType: String, formatterType: String)
+
 }

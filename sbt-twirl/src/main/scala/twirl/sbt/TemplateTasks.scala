@@ -19,6 +19,7 @@ import sbt._
 import Keys._
 
 object TemplateTasks {
+
   class ProblemException(problems: xsbti.Problem*) extends xsbti.CompileFailed {
     def arguments(): Array[String] = Array.empty
     def problems(): Array[xsbti.Problem] = problems.toArray
@@ -33,6 +34,7 @@ object TemplateTasks {
   }
 
   lazy val reportErrors = TaskKey[Unit]("report-errors")
+
   def addProblemReporterTo[T: Manifest](key: TaskKey[T], filter: File => Boolean = _ => true): Setting[_] =
     reportErrors.asInstanceOf[TaskKey[T]] in key <<=
       (key, streams).mapR(reportProblems(filter))
