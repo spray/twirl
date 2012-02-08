@@ -18,7 +18,7 @@
  * JR: I refactored this stuff heavily wrt position mapping and for use of SbtUtils
  */
 
-package templates.sbt
+package twirl.sbt
 
 import java.io.File
 
@@ -29,7 +29,7 @@ object TemplateProblems {
   def remapProblemForGeneratedSources(problem: xsbti.Problem) =
     problem.position.sourceFile.collect {
       // Templates
-      case play.templates.MaybeGeneratedSource(generatedSource) => {
+      case twirl.compiler.MaybeGeneratedSource(generatedSource) => {
         def remapPosition(file: File, line: Int, column: Int, offset: Int): (File, Int) =
           (generatedSource.source.get,
            generatedSource.mapPosition(offset))

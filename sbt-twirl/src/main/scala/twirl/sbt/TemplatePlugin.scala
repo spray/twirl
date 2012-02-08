@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package templates.sbt
+package twirl.sbt
 
 import sbt._
 import Keys._
@@ -25,12 +25,12 @@ object TemplatePlugin extends Plugin {
   object Template extends TemplateKeys {
     def settings = seq(
       templatesTypes := {
-        case "html" => ("play.api.templates.Html", "play.api.templates.HtmlFormat")
-        case "txt" => ("play.api.templates.Txt", "play.api.templates.TxtFormat")
-        case "xml" => ("play.api.templates.Xml", "play.api.templates.XmlFormat")
+        case "html" => ("twirl.api.Html", "twirl.api.HtmlFormat")
+        case "txt" => ("twirl.api.Txt", "twirl.api.TxtFormat")
+        case "xml" => ("twirl.api.Xml", "twirl.api.XmlFormat")
       },
       templatesImport in Global := Nil,
-      sourceDirectory in compileTemplates <<= (sourceDirectory in Compile) / "templates",
+      sourceDirectory in compileTemplates <<= (sourceDirectory in Compile) / "twirl",
       target in compileTemplates <<= (sourceManaged in Compile) / "generated-template-sources",
       compileTemplates <<= (sourceDirectory in compileTemplates,
                             target in compileTemplates,

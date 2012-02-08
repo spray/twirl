@@ -12,19 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This is almost verbatim copied from Play20 sbt-plugin
+ * This is an almost verbatim copy of the Play20 sbt-plugin at
  * https://github.com/playframework/Play20/raw/217271a2d6834b2abefa8eff070ec680c7956a99/framework/src/sbt-plugin/src/main/scala/PlayCommands.scala
  */
 
-package templates.sbt
+package twirl.sbt
 
 import sbt._
 import xsbti.Severity.Error
 import java.io.File
+import twirl.compiler._
 
 object TemplateCompiler {
-  def compile(sourceDirectory: File, generatedDir: File, templateTypes: PartialFunction[String, (String, String)], additionalImports: Seq[String]) = {
-    import play.templates._
+
+  def compile(sourceDirectory: File, generatedDir: File, templateTypes: PartialFunction[String, (String, String)],
+              additionalImports: Seq[String]) = {
     IO.createDirectory(generatedDir)
 
     val templateExt: PartialFunction[File, (File, String, String, String)] = {
@@ -40,7 +42,7 @@ object TemplateCompiler {
     try {
       (sourceDirectory ** "*.scala.*").get.collect(templateExt).foreach {
         case (template, extension, t, format) =>
-          ScalaTemplateCompiler.compile(
+          TwirlCompiler.compile(
             template,
             sourceDirectory,
             generatedDir,

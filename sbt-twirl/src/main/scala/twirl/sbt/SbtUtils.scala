@@ -13,14 +13,13 @@
  * limitations under the License.
  */
 
-package templates.sbt
+package twirl.sbt
 
 import java.lang.{Integer => JInteger}
 import java.io.File
 
 import sbt._
 import xsbti._
-import templates.sbt.SbtUtils.{PositionImpl, LineMap}
 
 /**
  * Some helper methods to create instances of xsbti interfaces
@@ -47,6 +46,7 @@ object SbtUtils {
       def offset: Maybe[JInteger] = for (l <- line; c <- pointer) yield map.offset(l, c)
     }
   }
+
   /**
    * Creates a position from an optional path and offset
    */
@@ -65,6 +65,7 @@ object SbtUtils {
       def offset: Maybe[JInteger] = _offset
     }
   }
+
   abstract class PositionImpl(path: Option[String]) extends Position {
     def sourcePath: Maybe[String] = path
     def sourceFile: Maybe[File] =
@@ -74,16 +75,16 @@ object SbtUtils {
     lazy val lineContent: String = IO.readLines(sourceFile.get)(line.get - 1)
   }
 
-  def mapPosition(pos: Position)(f: (File, Int, Int, Int) => (File, Int)): Position =
-    (for {
+  def mapPosition(pos: Position)(f: (File, Int, Int, Int) => (File, Int)): Position = {
+    for {
       file <- pos.sourceFile
       line <- pos.line
       column <- pos.pointer
       offset <- pos.offset
       (newFile, newOffset) = f(file, line, column, offset)
     }
-      yield position(Some(newFile.getCanonicalPath),
-                     Some(newOffset))).getOrElse(pos)
+    yield position(Some(newFile.getCanonicalPath), Some(newOffset))
+  } getOrElse(pos)
 
   class LineMap(file: File) {
     val lineStarts = IO.readLines(file).map(_.size + 1).scanLeft(0)(_ + _)

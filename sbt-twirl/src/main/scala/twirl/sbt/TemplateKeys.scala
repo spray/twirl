@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package templates.sbt
+package twirl.sbt
 
 import java.io.File
 import sbt._
