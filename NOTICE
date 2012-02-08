@@ -1,5 +1,5 @@
-Template is based on Play's Scala Templates (https://github.com/playframework/Play20/wiki/ScalaTemplates)
-which is licensed under these terms:
+This project is based on the Play framework Scala Templates (https://github.com/playframework/Play20/wiki/ScalaTemplates)
+which are licensed under these terms:
 
 Copyright 2012 Typesafe (http://www.typesafe.com)
 
