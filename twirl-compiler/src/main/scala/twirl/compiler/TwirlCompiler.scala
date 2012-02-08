@@ -12,11 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * 2012-02-03 This class is taken almost verbatim from play. We moved runtime stuff
- *            into its own module and adapted the import statements accordingly
+ * 2012-02-03 This class is taken almost verbatim from the Play framework.
+ *            The runtime bits were moved into its own module and
+ *            the import statements adapted accordingly.
  */
 
-package play.templates {
+package twirl.compiler {
 
   import scalax.file._
   import java.io.File
@@ -148,7 +149,7 @@ package play.templates {
 
   }
 
-  object ScalaTemplateCompiler {
+  object TwirlCompiler {
 
     import scala.util.parsing.input.Positional
     import scala.util.parsing.input.CharSequenceReader
@@ -489,7 +490,7 @@ package play.templates {
         Nil :+ """
 package """ :+ packageName :+ """
 
-import play.api.templates._
+import twirl.api._
 import TemplateMagic._
 
 """ :+ additionalImports :+ """
@@ -500,11 +501,11 @@ object """ :+ name :+ """ extends BaseScalaTemplate[""" :+ resultType :+ """,For
     def apply""" :+ Source(root.params.str, root.params.pos) :+ """:""" :+ resultType :+ """ = {
         _display_ {""" :+ templateCode(root, resultType) :+ """}
     }
-    
+
     """ :+ extra._1 :+ """
-    
+
     """ :+ extra._2 :+ """
-    
+
     def ref = this
 
 }"""
@@ -558,7 +559,7 @@ object """ :+ name :+ """ extends BaseScalaTemplate[""" :+ resultType :+ """,For
             p.name.toString + Option(p.tpt.toString).filter(_.startsWith("_root_.scala.<repeated>")).map(_ => ":_*").getOrElse("")
           }.mkString(",") + ")").mkString)
 
-        var templateType = "play.api.templates.Template%s[%s%s]".format(
+        var templateType = "twirl.api.Template%s[%s%s]".format(
           params.flatten.size,
           params.flatten.map {
             case a if a.mods.isByNameParam => a.tpt.children(1).toString

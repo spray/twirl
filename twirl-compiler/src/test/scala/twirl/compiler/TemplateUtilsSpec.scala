@@ -13,12 +13,11 @@
  * limitations under the License.
  */
 
-package play.templates.test
+package twirl.compiler
 
 import org.specs2.mutable._
 
-import play.templates._
-import play.api.templates.{Appendable,Format}
+import twirl.api.{Format, Appendable}
 
 object TemplateUtilsSpec extends Specification {
 
@@ -34,15 +33,18 @@ object TemplateUtilsSpec extends Specification {
 
         case class Html(text: String) extends Appendable[Html] {
           val buffer = new StringBuilder(text)
+
           def +(other: Html) = {
             buffer.append(other.buffer)
             this
           }
+
           override def toString = buffer.toString
         }
 
         object HtmlFormat extends Format[Html] {
           def raw(text: String) = Html(text)
+
           def escape(text: String) = Html(text.replace("<", "&lt;"))
         }
 
@@ -56,15 +58,18 @@ object TemplateUtilsSpec extends Specification {
 
         case class Text(text: String) extends Appendable[Text] {
           val buffer = new StringBuilder(text)
+
           def +(other: Text) = {
             buffer.append(other.buffer)
             this
           }
+
           override def toString = buffer.toString
         }
 
         object TextFormat extends Format[Text] {
           def raw(text: String) = Text(text)
+
           def escape(text: String) = Text(text)
         }
 

@@ -13,11 +13,9 @@
  * limitations under the License.
  */
 
-package play.templates.test
+package twirl.compiler
 
 import org.specs2.mutable._
-
-import play.templates._
 
 object TemplateParserSpec extends Specification {
 
@@ -25,17 +23,17 @@ object TemplateParserSpec extends Specification {
 
     import scala.util.parsing.input.CharSequenceReader
 
-    val parser = ScalaTemplateCompiler.templateParser
+    val parser = TwirlCompiler.templateParser
 
     def get(templateName: String) = {
-      new CharSequenceReader(scalax.file.Path("templates/src/test/templates/" + templateName).slurpString)
+      new CharSequenceReader(scalax.file.Path("twirl-compiler/src/test/templates/" + templateName).slurpString)
     }
 
     def parse(templateName: String) = {
       parser.parser(get(templateName))
     }
 
-    def failAt(message: String, line: Int, column: Int): PartialFunction[parser.ParseResult[ScalaTemplateCompiler.Template], Boolean] = {
+    def failAt(message: String, line: Int, column: Int): PartialFunction[parser.ParseResult[TwirlCompiler.Template], Boolean] = {
       case parser.NoSuccess(msg, rest) => {
         message == msg && rest.pos.line == line && rest.pos.column == column
       }
@@ -44,15 +42,21 @@ object TemplateParserSpec extends Specification {
     "succeed for" in {
 
       "static.scala.html" in {
-        parse("static.scala.html") must beLike({ case parser.Success(_, rest) => if (rest.atEnd) ok else ko })
+        parse("static.scala.html") must beLike({
+          case parser.Success(_, rest) => if (rest.atEnd) ok else ko
+        })
       }
 
       "simple.scala.html" in {
-        parse("simple.scala.html") must beLike({ case parser.Success(_, rest) => if (rest.atEnd) ok else ko })
+        parse("simple.scala.html") must beLike({
+          case parser.Success(_, rest) => if (rest.atEnd) ok else ko
+        })
       }
 
       "complicated.scala.html" in {
-        parse("complicated.scala.html") must beLike({ case parser.Success(_, rest) => if (rest.atEnd) ok else ko })
+        parse("complicated.scala.html") must beLike({
+          case parser.Success(_, rest) => if (rest.atEnd) ok else ko
+        })
       }
 
     }
