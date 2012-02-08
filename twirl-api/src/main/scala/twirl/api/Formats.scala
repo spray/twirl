@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package play.api.templates
+package twirl.api
 
 /**
  * Generic type representing content to be sent over an HTTP response.
@@ -47,6 +47,7 @@ case class Html(text: String) extends Appendable[Html] with Content {
     buffer.append(other.buffer)
     this
   }
+
   override def toString = buffer.toString
 
   /**
@@ -151,11 +152,12 @@ object TxtFormat extends Format[Txt] {
 case class Xml(text: String) extends Appendable[Xml] with Content {
   val buffer = new StringBuilder(text)
 
-  /** Append this XML fragment to another. */
+  /**Append this XML fragment to another. */
   def +(other: Xml) = {
     buffer.append(other.buffer)
     this
   }
+
   override def toString = buffer.toString
 
   /**

@@ -13,9 +13,12 @@
  * limitations under the License.
  */
 
-package play.api.templates
+package twirl.api
 
-trait Format[T <: Appendable[T]] {
-  def raw(text: String): T
-  def escape(text: String): T
+trait Appendable[T] {
+  def +(other: T): T
+
+  override def equals(x: Any): Boolean = super.equals(x)
+
+  override def hashCode() = super.hashCode()
 }

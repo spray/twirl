@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package play.api.templates
+package twirl.api
 
 case class BaseScalaTemplate[T <: Appendable[T], F <: Format[T]](format: F) {
 
