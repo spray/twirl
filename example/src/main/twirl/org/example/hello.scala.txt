@@ -1,0 +1,4 @@
+@(name: String, age: Int = 42)
+Welcome @name!!
+@* This template is a simple text template (this text btw. is a comment and is not rendered *@
+You are @age years old, @(if(age < 21) "shouldn't you be in bed ?!" else "have a great evening !")
