@@ -82,4 +82,29 @@ object TemplateUtilsSpec extends Specification {
     }
   }
 
+  "generate proper packages from the directory structure" in {
+    import java.io.File
+
+    val baseDir = new File("twirl-compiler/src/test/templates/")
+    def haveTemplateName(templateName: String*) = be_==(templateName) ^^ { fileName: String =>
+       TwirlCompiler.generatedFile(
+         template = new File(baseDir, fileName),
+         sourceDirectory = baseDir,
+         generatedDirectory = new File("generated-templates")
+       )._1.toSeq
+    }
+
+    "on the template dir root" in {
+      "simple.scala.html" must haveTemplateName("html", "simple")
+    }
+
+    "one level deep" in {
+      "example/simple.scala.html" must haveTemplateName("example", "html", "simple")
+    }
+
+    "several levels deep" in {
+      "com/example/simple.scala.html" must haveTemplateName("com", "example", "html", "simple")
+    }
+  }
+
 }
