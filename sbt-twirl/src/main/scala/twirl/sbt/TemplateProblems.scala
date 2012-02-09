@@ -34,10 +34,10 @@ object TemplateProblems {
           (generatedSource.source.get,
            generatedSource.mapPosition(offset))
 
-        SbtUtils.problem(
+        Utilities.problem(
           problem.message,
           problem.severity,
-          SbtUtils.mapPosition(problem.position)(remapPosition)
+          Utilities.mapPosition(problem.position)(remapPosition)
         )
       }
     }.getOrElse(problem)
@@ -72,12 +72,12 @@ object TemplateProblems {
       }.collect {
         case (Some(error), maybePosition) =>
           val position =
-            SbtUtils.position(
+            Utilities.position(
               path = Some(error._1),
               line = Some(error._2.toInt),
               column = maybePosition.map(_ - 1))
 
-          SbtUtils.problem(message  = error._3,
+          Utilities.problem(message  = error._3,
                            severity = xsbti.Severity.Error,
                            position = position)
       }

@@ -41,7 +41,8 @@ object TwirlPlugin extends Plugin {
         sourceDirectory in twirlCompile,
         target in twirlCompile,
         twirlTemplatesTypes,
-        twirlImports
+        twirlImports,
+        streams
       ) map TemplateCompiler.compile,
 
       (sourceGenerators in Compile) <+= twirlCompile,

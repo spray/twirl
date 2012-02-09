@@ -22,52 +22,60 @@ import sbt._
 import xsbti.Severity.Error
 import java.io.File
 import twirl.compiler._
+import collection.Seq
 
 object TemplateCompiler {
 
   def compile(sourceDirectory: File,
               generatedDir: File,
               templateTypes: PartialFunction[String, TemplateType],
-              additionalImports: Seq[String]) = {
-
-    IO.createDirectory(generatedDir)
-
-    val templateExt: PartialFunction[File, (File, String, TemplateType)] = {
-      case p if templateTypes.isDefinedAt(p.name.split('.').last) =>
-        val extension = p.name.split('.').last
-        val templateType = templateTypes(extension)
-        (p, extension, templateType)
-    }
-
-    // deletes old artifacts
-    (generatedDir ** "*.template.scala").get.map(GeneratedSource(_)).foreach(_.sync())
+              additionalImports: Seq[String],
+              streams: Keys.TaskStreams) = {
 
     try {
-      (sourceDirectory ** "*.scala.*").get.collect(templateExt).foreach {
-        case (template, extension, TemplateType(resultType, formatterType)) =>
-          TwirlCompiler.compile(
-            template,
-            sourceDirectory,
-            generatedDir,
-            resultType,
-            formatterType,
-            additionalImports.map("import " + _.replace("%format%", extension)).mkString("\n"))
-      }
-    } catch {
-      case TemplateCompilationError(source, message, line, column) => {
-        throw new TemplateTasks.ProblemException(
-          SbtUtils.problem(message,
-                           Error,
-                           SbtUtils.position(
-                             Some(source.getCanonicalPath),
-                             Some(line),
-                             Some(column)
-                           ))
-        )
-      }
-      case e => throw e
-    }
+      IO.createDirectory(generatedDir)
 
-    (generatedDir ** "*.template.scala").get.map(_.getAbsoluteFile)
+      cleanUp(generatedDir)
+
+      val templates = collectTemplates(sourceDirectory, templateTypes)
+      streams.log.info("Preparing " + templates.size + " Twirl templates ...")
+
+      for ((templateFile, extension, TemplateType(resultType, formatterType)) <- templates) {
+        streams.log.debug("Preparing twirl template "+ templateFile)
+        val addImports = additionalImports.map("import " + _.replace("%format%", extension)).mkString("\n")
+        TwirlCompiler.compile(templateFile, sourceDirectory, generatedDir, resultType, formatterType, addImports)
+      }
+
+      (generatedDir ** "*.template.scala").get.map(_.getAbsoluteFile)
+
+    } catch handleTemplateCompilationError
+  }
+
+  private def cleanUp(generatedDir: File) {
+    (generatedDir ** "*.template.scala").get.foreach {
+      GeneratedSource(_).sync()
+    }
+  }
+
+  private def collectTemplates(sourceDirectory: File, templateTypes: PartialFunction[String, TemplateType]) = {
+    (sourceDirectory ** "*.scala.*").get.flatMap { file =>
+      val ext = file.name.split('.').last
+      if (templateTypes.isDefinedAt(ext)) Some(file, ext, templateTypes(ext))
+      else None
+    }
+  }
+
+  private val handleTemplateCompilationError: PartialFunction[Throwable, Nothing] = {
+    case TemplateCompilationError(source, message, line, column) =>
+      throw new TemplateTasks.ProblemException(
+        Utilities.problem(message, Error,
+          Utilities.position(
+            Some(source.getCanonicalPath),
+            Some(line),
+            Some(column)
+          )
+        )
+      )
+    case e => throw e
   }
 }
