@@ -1,6 +1,5 @@
 package test
 
 object Main extends App {
-  println(html.hello("Fred & Du", 28))
-  wef
+  println(html.hello("Darth", 42))
 }
