@@ -43,8 +43,10 @@ object TemplateTasks {
       val logger = Utilities.colorLogger(streams.toEither.right.get.log)
       val reporter = new LoggerReporter(10, logger)
       val problems = Compiler.allProblems(incomplete).filter(_.position.sourceFile.exists(filter))
-      logger.error("[-YELLOW-]%s problem(s) in Twirl template(s) found:" format problems.size)
-      problems.foreach { p => reporter.display(p.position, p.message, p.severity) }
+      if (!problems.isEmpty) {
+        logger.error("[-YELLOW-]%s problem(s) in Twirl template(s) found:" format problems.size)
+        problems.foreach { p => reporter.display(p.position, p.message, p.severity) }
+      }
       throw incomplete
     case Value(v) => v
   }
