@@ -63,6 +63,8 @@ object TwirlPlugin extends Plugin {
       excludeFilter in twirlCompile <<= excludeFilter in Global,
       watch(sourceDirectory in twirlCompile, includeFilter in twirlCompile, excludeFilter in twirlCompile),
 
+      resolvers += "spray repo" at "http://repo.spray.cc",
+
       libraryDependencies += "cc.spray" %% "twirl-api" % "0.5.0-SNAPSHOT"
     )
 
