@@ -122,6 +122,13 @@ In addition the strings in ``twirlImports`` can contain a ``%format%`` placehold
 file extension. This way you can target imports for specific template types.
 
 
+Example
+=======
+
+The ``/example`` directory of this project contains a tiny, stand-alone SBT 0.11.2 example project that you can look
+at or use as the basis for your own endeavors.
+
+
 Why "Twirl" ?
 =============
 
