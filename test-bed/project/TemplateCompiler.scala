@@ -1,0 +1,1 @@
+../../sbt-twirl/src/main/scala/twirl/sbt/TemplateCompiler.scala
