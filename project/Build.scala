@@ -11,18 +11,22 @@ object Build extends Build {
 
   lazy val root =
     Project("twirl", file("."))
+      .settings(general: _*)
+      .settings(noPublishing: _*)
       .aggregate(twirlApi, twirl, sbtPlugin)
 
   lazy val twirlApi =
     Project("twirl-api", file("twirl-api"))
-      .settings(generalSettings: _*)
+      .settings(general: _*)
+      .settings(publishing: _*)
       .settings(
         libraryDependencies += commonsLang
       )
 
   lazy val twirl =
     Project("twirl-compiler", file("twirl-compiler"))
-      .settings(generalSettings: _*)
+      .settings(general: _*)
+      .settings(publishing: _*)
       .settings(
         libraryDependencies ++= Seq(
           scalaIO,
@@ -34,14 +38,15 @@ object Build extends Build {
 
   lazy val sbtPlugin =
     Project("sbt-twirl", file("sbt-twirl"))
-      .settings(generalSettings: _*)
+      .settings(general: _*)
+      .settings(publishing: _*)
       .settings(
         Keys.sbtPlugin := true
       )
       .dependsOn(twirl)
 
 
-  lazy val generalSettings = publishSettings ++ Seq(
+  lazy val general = seq(
     version               := "0.5.0-SNAPSHOT",
     homepage              := Some(new URL("https://github.com/spray/sbt-twirl")),
     organization          := "cc.spray",
@@ -53,7 +58,7 @@ object Build extends Build {
     description           := "The Play framework Scala template engine, standalone and packaged as an SBT plugin"
   )
 
-  lazy val publishSettings = Seq[Setting[_]](
+  lazy val publishing = seq(
     credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
     publishMavenStyle := true,
     publishTo <<= version { version =>
@@ -66,6 +71,11 @@ object Build extends Build {
         }
       }
     }
+  )
+
+  lazy val noPublishing = seq(
+    publish := (),
+    publishLocal := ()
   )
 }
 
