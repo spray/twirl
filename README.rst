@@ -150,6 +150,14 @@ Credits
 All credits are to go to the Play developers who devised the template language and provided its implementation!
 
 
+Patch Policy
+============
+
+Feedback and contributions to the project, no matter what kind, are always very welcome. However, patches can only be
+accepted from their original author. Along with any patches, please state that the patch is your original work and that
+you license the work to the sbt-revolver project under the project’s open source license.
+
+
 .. _`Play Framework`: http://www.playframework.org/
 .. _`Scala`: http://www.scala-lang.org/
 .. _`Scala template engine`: https://github.com/playframework/Play20/wiki/ScalaTemplates
