@@ -65,7 +65,8 @@ object TwirlPlugin extends Plugin {
 
       resolvers += "spray repo" at "http://repo.spray.cc",
 
-      libraryDependencies += "cc.spray" %% "twirl-api" % "0.5.0-SNAPSHOT"
+      libraryDependencies +=
+        "cc.spray" %% "twirl-api" % IO.readStream(getClass.getClassLoader.getResourceAsStream("twirl-version"))
     )
 
   }
