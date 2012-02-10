@@ -38,7 +38,7 @@ object TemplateCompiler {
       cleanUp(generatedDir)
 
       val templates = collectTemplates(sourceDirectory, templateTypes)
-      streams.log.info("Preparing " + templates.size + " Twirl templates ...")
+      streams.log.info("Preparing " + templates.size + " Twirl template(s) ...")
 
       for ((templateFile, extension, TemplateType(resultType, formatterType)) <- templates) {
         streams.log.debug("Preparing twirl template "+ templateFile)
