@@ -8,3 +8,7 @@ unmanagedSourceDirectories in Compile <<= Seq(
   baseDirectory / "twirl-api-src",
   baseDirectory / "twirl-compiler-src"
 ).join
+
+unmanagedResourceDirectories in Compile <<= Seq(
+  baseDirectory / "sbt-twirl-res"
+).join
