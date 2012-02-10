@@ -13,7 +13,7 @@ object Build extends Build {
     Project("twirl", file("."))
       .settings(general: _*)
       .settings(noPublishing: _*)
-      .aggregate(twirlApi, twirl, sbtPlugin)
+      .aggregate(twirlApi, twirlCompiler, sbtTwirl)
 
   lazy val twirlApi =
     Project("twirl-api", file("twirl-api"))
@@ -23,7 +23,7 @@ object Build extends Build {
         libraryDependencies += commonsLang
       )
 
-  lazy val twirl =
+  lazy val twirlCompiler =
     Project("twirl-compiler", file("twirl-compiler"))
       .settings(general: _*)
       .settings(publishing: _*)
@@ -36,14 +36,14 @@ object Build extends Build {
       )
       .dependsOn(twirlApi % "test")
 
-  lazy val sbtPlugin =
+  lazy val sbtTwirl =
     Project("sbt-twirl", file("sbt-twirl"))
       .settings(general: _*)
       .settings(publishing: _*)
       .settings(
         Keys.sbtPlugin := true
       )
-      .dependsOn(twirl)
+      .dependsOn(twirlCompiler)
 
 
   lazy val general = seq(
