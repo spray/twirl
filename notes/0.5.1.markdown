@@ -1,0 +1,6 @@
+This is primarily a maintenance release.
+
+- Added support for specification of custom twirl source codec (default: UTF-8)
+- Fixed incorrect dependency on twirl-api SNAPSHOT
+- Upgraded to scala-io 0.3.0
+- Smaller cosmetic improvements

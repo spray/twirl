@@ -23,12 +23,12 @@ portions of the SBT plugin are nothing but verbatim copies of the respective cod
 Installation
 ============
 
-sbt-twirl requires SBT 0.11.2. Add the following dependency to your ``project/*.sbt`` file
+sbt-twirl requires SBT 0.11.1 or 0.11.2. Add the following dependency to your ``project/*.sbt`` file
 (e.g. ``project/plugins.sbt``)::
 
     resolvers += "spray repo" at "http://repo.spray.cc"
 
-    addSbtPlugin("cc.spray" % "sbt-twirl" % "0.5.0")
+    addSbtPlugin("cc.spray" % "sbt-twirl" % "0.5.1")
 
 and this to your ``build.sbt``::
 
@@ -105,21 +105,25 @@ directory are turned into package names for the created template objects. So, if
 Configuration
 =============
 
-sbt-twirl does not currently offer a lot of customization options.
-The only things you might want to use is the ``twirlImports`` key, which lets you specify one or more imports that
-are to be made available to the Scala source in your template files.
+sbt-twirl currently offers the following customization options:
 
-For example::
+1. ``twirlImports = SettingKey[Seq[String]]``: lets you specify one or more imports that are to be made available to the
+   Scala source in your template files.
 
-    twirlImports := Seq("org.example.util._", "com.mycompany.DbTools")
+   For example::
 
-will be turned into the following import statements::
+       twirlImports := Seq("org.example.util._", "com.mycompany.DbTools")
 
-    import org.example.util._
-    import com.mycompany.DbTools
+   will be turned into the following import statements::
 
-In addition the strings in ``twirlImports`` can contain a ``%format%`` placeholder, which is replaced with the template
-file extension. This way you can target imports for specific template types.
+       import org.example.util._
+       import com.mycompany.DbTools
+
+   In addition the strings in ``twirlImports`` can contain a ``%format%`` placeholder, which is replaced with the template
+   file extension. This way you can target imports for specific template types.
+
+2. ``twirlSourceCharset = SettingKey[Charset]``: lets you specify the `java.nio.charset.Charset` to use when reading
+   twirl template sources and writing their corresponding ``.scala`` files. The default value is the ``UTF-8`` charset.
 
 
 Example
