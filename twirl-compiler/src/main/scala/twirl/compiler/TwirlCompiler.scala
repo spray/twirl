@@ -22,8 +22,10 @@ package twirl.compiler {
   import scalax.file._
   import java.io.File
   import scala.annotation.tailrec
+import java.nio.charset.Charset
+import scalax.io.Codec
 
-  object Hash {
+object Hash {
 
     def apply(bytes: Array[Byte]) = {
       import java.security.MessageDigest
@@ -172,9 +174,11 @@ package twirl.compiler {
     case class Block(whitespace: String, args: Option[String], content: Seq[TemplateTree]) extends ScalaExpPart with Positional
     case class Value(ident: PosString, block: Block) extends Positional
 
-    def compile(source: File, sourceDirectory: File, generatedDirectory: File, resultType: String, formatterType: String, additionalImports: String = "") = {
+    def compile(source: File, sourceDirectory: File, generatedDirectory: File, resultType: String,
+                formatterType: String, sourceCharset: Charset, additionalImports: String = "") = {
       val (templateName, generatedSource) = generatedFile(source, sourceDirectory, generatedDirectory)
       if (generatedSource.needRecompilation) {
+        implicit val codec = Codec(sourceCharset) // for reading twirl sources as well as writing .scala files
         val generated = templateParser.parser(new CharSequenceReader(Path(source).slurpString)) match {
           case templateParser.Success(parsed, rest) if rest.atEnd => {
             generateFinalTemplate(
@@ -194,7 +198,8 @@ package twirl.compiler {
           }
         }
 
-        Path(generatedSource.file).write(generated.toString)
+        // work around for a bug in scala-io: we encode the string ourselves
+        Path(generatedSource.file).write(generated.toString.getBytes(codec.name))
 
         Some(generatedSource.file)
       } else {

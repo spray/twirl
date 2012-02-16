@@ -23,12 +23,14 @@ import xsbti.Severity.Error
 import java.io.File
 import twirl.compiler._
 import collection.Seq
+import java.nio.charset.Charset
 
 object TemplateCompiler {
 
   def compile(sourceDirectory: File,
               generatedDir: File,
               templateTypes: PartialFunction[String, TemplateType],
+              sourceCharset: Charset,
               additionalImports: Seq[String],
               streams: Keys.TaskStreams) = {
 
@@ -43,7 +45,8 @@ object TemplateCompiler {
       for ((templateFile, extension, TemplateType(resultType, formatterType)) <- templates) {
         streams.log.debug("Preparing twirl template "+ templateFile)
         val addImports = additionalImports.map("import " + _.replace("%format%", extension)).mkString("\n")
-        TwirlCompiler.compile(templateFile, sourceDirectory, generatedDir, resultType, formatterType, addImports)
+        TwirlCompiler.compile(templateFile, sourceDirectory, generatedDir, resultType, formatterType,
+          sourceCharset, addImports)
       }
 
       (generatedDir ** "*.template.scala").get.map(_.getAbsoluteFile)

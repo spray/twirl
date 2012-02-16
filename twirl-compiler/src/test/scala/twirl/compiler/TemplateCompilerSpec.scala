@@ -19,6 +19,7 @@ import org.specs2.mutable._
 import twirl.api.{Appendable, Format}
 
 import java.io._
+import java.nio.charset.Charset
 
 object TemplateCompilerSpec extends Specification {
 
@@ -139,7 +140,8 @@ object Helper {
 
     def compile[T](templateName: String, className: String): T = {
       val templateFile = new File(sourceDir, templateName)
-      val Some(generated) = templateCompiler.compile(templateFile, sourceDir, generatedDir, "twirl.compiler.Helper.Html", "twirl.compiler.Helper.HtmlFormat")
+      val Some(generated) = templateCompiler.compile(templateFile, sourceDir, generatedDir,
+        "twirl.compiler.Helper.Html", "twirl.compiler.Helper.HtmlFormat", Charset.forName("UTF-8"))
 
       val mapper = GeneratedSource(generated)
 

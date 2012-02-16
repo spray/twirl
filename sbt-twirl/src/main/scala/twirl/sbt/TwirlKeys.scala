@@ -17,12 +17,16 @@ package twirl.sbt
 
 import java.io.File
 import sbt._
+import java.nio.charset.Charset
 
 trait TwirlKeys {
 
   val twirlImports = SettingKey[Seq[String]]("twirl-imports", "Additional imports available to the twirl templates")
 
   val twirlTemplatesTypes = SettingKey[TemplateTypeMap]("twirl-template-types", "Defined templates types")
+
+  val twirlSourceCharset = SettingKey[Charset]("twirl-source-charset",
+    "The charset to use when reading twirl sources and writing template .scala files")
 
   val twirlCompile = TaskKey[Seq[File]]("twirl-compile", "Compile twirl templates into scala source files")
 
