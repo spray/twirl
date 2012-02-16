@@ -1,3 +1,11 @@
+Version 0.5.1 (2012-02-16)
+--------------------------
+- Added support for specification of custom twirl source codec (default: UTF-8)
+- Fixed incorrect dependency on twirl-api SNAPSHOT
+- Upgraded to scala-io 0.3.0
+- Smaller cosmetic improvements
+
+
 Version 0.5.0 (2012-02-09)
 --------------------------
 first public release
