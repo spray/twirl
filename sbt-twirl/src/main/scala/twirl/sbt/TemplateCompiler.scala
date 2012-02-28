@@ -33,20 +33,24 @@ object TemplateCompiler {
               sourceCharset: Charset,
               additionalImports: Seq[String],
               streams: Keys.TaskStreams) = {
-
     try {
       IO.createDirectory(generatedDir)
 
       cleanUp(generatedDir)
 
       val templates = collectTemplates(sourceDirectory, templateTypes)
-      streams.log.info("Preparing " + templates.size + " Twirl template(s) ...")
+      streams.log.debug("Preparing " + templates.size + " Twirl template(s) ...")
 
       for ((templateFile, extension, TemplateType(resultType, formatterType)) <- templates) {
-        streams.log.debug("Preparing twirl template "+ templateFile)
         val addImports = additionalImports.map("import " + _.replace("%format%", extension)).mkString("\n")
-        TwirlCompiler.compile(templateFile, sourceDirectory, generatedDir, resultType, formatterType,
-          sourceCharset, addImports)
+        TwirlCompiler.compile(
+          templateFile, sourceDirectory, generatedDir, resultType, formatterType, sourceCharset, addImports,
+          targetFile => streams.log.info {
+            val skipChars = sourceDirectory.toString.length
+            "Compiling twirl template ..." + templateFile.toString.substring(skipChars) +
+              " to .../" + targetFile.getName
+          }
+        )
       }
 
       (generatedDir ** "*.template.scala").get.map(_.getAbsoluteFile)

@@ -175,9 +175,11 @@ object Hash {
     case class Value(ident: PosString, block: Block) extends Positional
 
     def compile(source: File, sourceDirectory: File, generatedDirectory: File, resultType: String,
-                formatterType: String, sourceCharset: Charset, additionalImports: String = "") = {
+                formatterType: String, sourceCharset: Charset, additionalImports: String = "",
+                logRecompilation: File => Unit = _ => ()) = {
       val (templateName, generatedSource) = generatedFile(source, sourceDirectory, generatedDirectory)
       if (generatedSource.needRecompilation) {
+        logRecompilation(generatedSource.file)
         implicit val codec = Codec(sourceCharset) // for reading twirl sources as well as writing .scala files
         val generated = templateParser.parser(new CharSequenceReader(Path(source).slurpString)) match {
           case templateParser.Success(parsed, rest) if rest.atEnd => {
@@ -198,7 +200,7 @@ object Hash {
           }
         }
 
-        // work around for a bug in scala-io: we encode the string ourselves
+        // work-around for a bug in scala-io: we encode the string ourselves
         Path(generatedSource.file).write(generated.toString.getBytes(codec.name))
 
         Some(generatedSource.file)

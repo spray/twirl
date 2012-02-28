@@ -20,15 +20,14 @@ import Keys._
 
 object TemplateTasks {
 
-  class ProblemException(problems: xsbti.Problem*) extends xsbti.CompileFailed {
+  class ProblemException(issues: xsbti.Problem*) extends xsbti.CompileFailed {
     def arguments(): Array[String] = Array.empty
-    def problems(): Array[xsbti.Problem] = problems.toArray
+    def problems(): Array[xsbti.Problem] = issues.toArray
   }
 
   def improveErrorMsg[T](result: Result[T], streamManagerR: Result[Streams]): T = result match {
     case Inc(incomplete) =>
       val probs = TemplateProblems.getProblems(incomplete, streamManagerR.toEither.right.get)
-
       throw new ProblemException(probs: _*)
     case Value(v) => v
   }
@@ -44,7 +43,7 @@ object TemplateTasks {
       val reporter = new LoggerReporter(10, logger)
       val problems = Compiler.allProblems(incomplete).filter(_.position.sourceFile.exists(filter))
       if (!problems.isEmpty) {
-        logger.error("[-YELLOW-]%s problem(s) in Twirl template(s) found:" format problems.size)
+        logger.error("[-YELLOW-]%s problem(s) in Twirl template(s) found" format problems.size)
         problems.foreach { p => reporter.display(p.position, p.message, p.severity) }
       }
       throw incomplete
