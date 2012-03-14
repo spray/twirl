@@ -1,0 +1,3 @@
+This is a maintenance release. There is only one change since the last release:
+
+- Improved logging to only show info level message on actual template recompilation

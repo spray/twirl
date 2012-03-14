@@ -1,3 +1,8 @@
+Version 0.5.2 (2012-03-14)
+--------------------------
+- Improved logging to only show info level message on actual template recompilation
+
+
 Version 0.5.1 (2012-02-16)
 --------------------------
 - Added support for specification of custom twirl source codec (default: UTF-8)
