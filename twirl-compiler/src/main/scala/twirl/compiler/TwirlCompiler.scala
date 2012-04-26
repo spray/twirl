@@ -199,10 +199,7 @@ object Hash {
             throw new TemplateCompilationError(source, message, input.pos.line, input.pos.column)
           }
         }
-
-        // work-around for a bug in scala-io: we encode the string ourselves
-        Path(generatedSource.file).write(generated.toString.getBytes(codec.name))
-
+        Path(generatedSource.file).write(generated)
         Some(generatedSource.file)
       } else {
         None
