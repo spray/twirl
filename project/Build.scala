@@ -41,7 +41,8 @@ object Build extends Build {
       .settings(general: _*)
       .settings(publishing: _*)
       .settings(
-        Keys.sbtPlugin := true
+        Keys.sbtPlugin := true,
+        CrossBuilding.crossSbtVersions := Seq("0.11.3", "0.12")
       )
       .dependsOn(twirlCompiler)
 
