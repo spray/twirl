@@ -1,0 +1,2 @@
+This is a maintenance release adding support for sbt 0.12. It is now published to the sbt community
+repository so that no extra resolver has to be declared any more.
