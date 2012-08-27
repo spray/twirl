@@ -29,7 +29,7 @@ sbt-twirl requires SBT 0.12 or 0.11. Add the following dependency to your ``proj
     // uncomment for sbt 0.11.x
     //resolvers += "spray repo" at "http://repo.spray.cc"
 
-    addSbtPlugin("cc.spray" % "sbt-twirl" % "0.5.2")
+    addSbtPlugin("cc.spray" % "sbt-twirl" % "0.5.3")
 
 and this to your ``build.sbt``::
 
