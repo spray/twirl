@@ -61,16 +61,15 @@ object Build extends Build {
 
   lazy val publishing = seq(
     credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
-    publishMavenStyle := true,
-    publishTo <<= version { version =>
-      Some {
-        "spray nexus" at {
-          // public uri is repo.spray.cc, we use an SSH tunnel to the nexus here
-          "http://localhost:42424/content/repositories/" + {
-            if (version.trim.endsWith("SNAPSHOT")) "snapshots/" else"releases/"
-          }
-        }
-      }
+    publishMavenStyle := false,
+    publishTo <<= (version) { version: String =>
+      val scalasbt = "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-"
+      val suffix = if (version.contains("-SNAPSHOT")) "snapshots" else "releases"
+
+      val name = "sbt-plugin-" + suffix
+      val url  = scalasbt      + suffix
+
+      Some(Resolver.url(name, new URL(url))(Resolver.ivyStylePatterns))
     }
   )
 
