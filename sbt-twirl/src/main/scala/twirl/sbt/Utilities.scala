@@ -59,7 +59,9 @@ object Utilities {
   def problem(message: String, severity: xsbti.Severity, position: xsbti.Position): Problem =
     ProblemImpl(position, message, severity)
 
-  case class ProblemImpl(position: xsbti.Position, message: String, severity: xsbti.Severity) extends Problem
+  case class ProblemImpl(position: xsbti.Position, message: String, severity: xsbti.Severity) extends Problem {
+    def category: String = "undefined"
+  }
 
   /**
    * Creates a position from an optional path, line, and column
@@ -86,9 +88,9 @@ object Utilities {
     new PositionImpl(path) {
       lazy val map = new LineMap(sourceFile.get)
 
-      lazy val (line: Maybe[JInteger], pointer: Maybe[JInteger]) =
+      lazy val (line, pointer): (Maybe[JInteger], Maybe[JInteger]) =
         offset map (map.position(_)) match {
-          case Some((l, c)) => (Some(l): Maybe[JInteger], Some(c): Maybe[JInteger])
+          case Some((l, c)) => (Some(l), Some(c))
           case None => (None, None)
         }
 

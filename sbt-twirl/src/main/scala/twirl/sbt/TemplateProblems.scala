@@ -24,6 +24,7 @@ import java.io.File
 
 import sbt._
 import Keys._
+import xsbti.Problem
 
 object TemplateProblems {
   def remapProblemForGeneratedSources(problem: xsbti.Problem) =
@@ -43,7 +44,7 @@ object TemplateProblems {
     }.getOrElse(problem)
 
   def getProblems(incomplete: Incomplete, streamsManager: Streams): Seq[xsbti.Problem] =
-    (Compiler.allProblems(incomplete) ++ extractJavaCErrors(incomplete, streamsManager))
+    (allProblems(incomplete) ++ extractJavaCErrors(incomplete, streamsManager))
       .map(remapProblemForGeneratedSources)
 
   def extractJavaCErrors(incomplete: Incomplete, streamsManager: Streams): Seq[xsbti.Problem] =
@@ -81,5 +82,17 @@ object TemplateProblems {
                            severity = xsbti.Severity.Error,
                            position = position)
       }
+    }
+
+  def allProblems(inc: Incomplete): Seq[Problem] =
+    allProblems(inc :: Nil)
+
+  def allProblems(incs: Seq[Incomplete]): Seq[Problem] =
+    problems(Incomplete.allExceptions(incs).toSeq)
+
+  def problems(es: Seq[Throwable]): Seq[Problem] =
+    es flatMap {
+      case cf: xsbti.CompileFailed => cf.problems
+      case _ => Nil
     }
 }

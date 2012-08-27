@@ -23,10 +23,11 @@ portions of the SBT plugin are nothing but verbatim copies of the respective cod
 Installation
 ============
 
-sbt-twirl requires SBT 0.11.1 or 0.11.2. Add the following dependency to your ``project/*.sbt`` file
+sbt-twirl requires SBT 0.12 or 0.11. Add the following dependency to your ``project/*.sbt`` file
 (e.g. ``project/plugins.sbt``)::
 
-    resolvers += "spray repo" at "http://repo.spray.cc"
+    // uncomment for sbt 0.11.x
+    //resolvers += "spray repo" at "http://repo.spray.cc"
 
     addSbtPlugin("cc.spray" % "sbt-twirl" % "0.5.2")
 
@@ -166,7 +167,7 @@ Patch Policy
 
 Feedback and contributions to the project, no matter what kind, are always very welcome. However, patches can only be
 accepted from their original author. Along with any patches, please state that the patch is your original work and that
-you license the work to the sbt-revolver project under the project’s open source license.
+you license the work to the twirl project under the project’s open source license.
 
 
 .. _`Play Framework`: http://www.playframework.org/
