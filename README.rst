@@ -28,7 +28,13 @@ sbt-twirl requires SBT 0.12 or 0.11. Add the following dependency to your ``proj
 
     addSbtPlugin("cc.spray" % "sbt-twirl" % "0.5.4")
 
-and this to your ``build.sbt``::
+If you are using SBT 0.11.3 you'll have to add an extra resolver::
+
+    Resolver.url("sbt-plugin-releases",
+      new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(
+        Resolver.ivyStylePatterns)
+
+Then, in your ``build.sbt``::
 
     seq(Twirl.settings: _*)
 
