@@ -175,7 +175,7 @@ you license the work to the twirl project under the project’s open source lice
 
 .. _`Play Framework`: http://www.playframework.org/
 .. _`Scala`: http://www.scala-lang.org/
-.. _`Scala template engine`: https://github.com/playframework/Play20/wiki/ScalaTemplates
+.. _`Scala template engine`: http://www.playframework.org/documentation/2.0/ScalaTemplates
 .. _`SBT`: https://github.com/harrah/xsbt/wiki
 .. _`sbt-revolver`: https://github.com/spray/sbt-revolver
 .. _`Play Framework Repository`: https://github.com/playframework/Play20
