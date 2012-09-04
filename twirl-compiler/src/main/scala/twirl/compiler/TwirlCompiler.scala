@@ -59,7 +59,7 @@ object Hash {
       val UndefinedMeta = """([A-Z]+):""".r
       Map.empty[String, String] ++ {
         try {
-          Path(file).slurpString.split("-- GENERATED --")(1).trim.split('\n').map { m =>
+          Path(file).string.split("-- GENERATED --")(1).trim.split('\n').map { m =>
             m.trim match {
               case Meta(key, value) => (key -> value)
               case UndefinedMeta(key) => (key -> "")
@@ -127,7 +127,7 @@ object Hash {
     def toSourcePosition(marker: Int): (Int, Int) = {
       try {
         val targetMarker = mapPosition(marker)
-        val line = Path(source.get).slurpString.substring(0, targetMarker).split('\n').size
+        val line = Path(source.get).string.substring(0, targetMarker).split('\n').size
         (line, targetMarker)
       } catch {
         case _ => (0, 0)
@@ -181,7 +181,7 @@ object Hash {
       if (generatedSource.needRecompilation) {
         logRecompilation(generatedSource.file)
         implicit val codec = Codec(sourceCharset) // for reading twirl sources as well as writing .scala files
-        val generated = templateParser.parser(new CharSequenceReader(Path(source).slurpString)) match {
+        val generated = templateParser.parser(new CharSequenceReader(Path(source).string)) match {
           case templateParser.Success(parsed, rest) if rest.atEnd => {
             generateFinalTemplate(
               source,

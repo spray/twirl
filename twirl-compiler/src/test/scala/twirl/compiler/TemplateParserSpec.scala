@@ -26,7 +26,7 @@ object TemplateParserSpec extends Specification {
     val parser = TwirlCompiler.templateParser
 
     def get(templateName: String) = {
-      new CharSequenceReader(scalax.file.Path.fromString("twirl-compiler/src/test/templates/" + templateName).slurpString)
+      new CharSequenceReader(scalax.file.Path.fromString("twirl-compiler/src/test/templates/" + templateName).string)
     }
 
     def parse(templateName: String) = {

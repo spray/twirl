@@ -67,7 +67,7 @@ object Build extends Build {
       val scalasbt = "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-"
       val suffix = if (version.contains("-SNAPSHOT")) "snapshots" else "releases"
 
-      val name = "sbt-plugin-" + suffix
+      val name = "plugin-" + suffix
       val url  = scalasbt      + suffix
 
       Some(Resolver.url(name, new URL(url))(Resolver.ivyStylePatterns))
