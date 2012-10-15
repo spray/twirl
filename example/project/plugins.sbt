@@ -1,3 +1,3 @@
-resolvers += "spray repo" at "http://repo.spray.cc"
+resolvers += "spray repo" at "http://repo.spray.io"
 
-addSbtPlugin("cc.spray" % "sbt-twirl" % "0.5.2")
+addSbtPlugin("io.spray" % "sbt-twirl" % "0.5.2")

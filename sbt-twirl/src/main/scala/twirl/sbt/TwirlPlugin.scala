@@ -69,8 +69,8 @@ object TwirlPlugin extends Plugin {
 
       libraryDependencies <+= (scalaVersion) { (scalaV) =>
         val version = IO.readStream(getClass.getClassLoader.getResourceAsStream("twirl-version"))
-        "cc.spray" %% "twirl-api" % version from
-          "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/cc.spray/twirl-api_%s/%s/jars/twirl-api_%s.jar".format(scalaV, version, scalaV)
+        "io.spray" %% "twirl-api" % version from
+          "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/io.spray/twirl-api_%s/%s/jars/twirl-api_%s.jar".format(scalaV, version, scalaV)
       }
     )
 
