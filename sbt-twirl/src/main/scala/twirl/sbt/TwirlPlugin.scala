@@ -67,7 +67,8 @@ object TwirlPlugin extends Plugin {
       excludeFilter in twirlCompile <<= excludeFilter in Global,
       watch(sourceDirectory in twirlCompile, includeFilter in twirlCompile, excludeFilter in twirlCompile),
 
-      libraryDependencies <+= (scalaVersion) { (scalaV) =>
+      libraryDependencies <+= (scalaVersion) { sV =>
+        val scalaV = if (CrossVersion.isStable(sV)) CrossVersion.binaryScalaVersion(sV) else sV
         val version = IO.readStream(getClass.getClassLoader.getResourceAsStream("twirl-version"))
         "io.spray" %% "twirl-api" % version from
           "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/io.spray/twirl-api_%s/%s/jars/twirl-api_%s.jar".format(scalaV, version, scalaV)

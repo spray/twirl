@@ -20,7 +20,8 @@ object Build extends Build {
       .settings(general: _*)
       .settings(publishing: _*)
       .settings(
-        libraryDependencies += commonsLang
+        libraryDependencies += commonsLang,
+        crossScalaVersions  := Seq("2.9.2", "2.10.0-RC1")
       )
 
   lazy val twirlCompiler =
@@ -55,6 +56,7 @@ object Build extends Build {
     startYear             := Some(2012),
     licenses              := Seq("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
     scalaVersion          := "2.9.1",
+    scalaBinaryVersion   <<= scalaVersion(sV => if (CrossVersion.isStable(sV)) CrossVersion.binaryScalaVersion(sV) else sV),
     scalacOptions         := Seq("-unchecked", "-deprecation", "-encoding", "utf8"),
     description           := "The Play framework Scala template engine, standalone and packaged as an SBT plugin",
     resolvers             += "typesafe repo"   at "http://repo.typesafe.com/typesafe/releases/"
