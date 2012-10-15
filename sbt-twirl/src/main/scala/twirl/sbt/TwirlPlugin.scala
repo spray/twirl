@@ -67,12 +67,13 @@ object TwirlPlugin extends Plugin {
       excludeFilter in twirlCompile <<= excludeFilter in Global,
       watch(sourceDirectory in twirlCompile, includeFilter in twirlCompile, excludeFilter in twirlCompile),
 
+      resolvers += "repo.spray.io" at "http://repo.spray.io",
+
       libraryDependencies <+= (scalaVersion) { sV =>
         val scalaV = binaryScalaVersion(sV)
         val crossVersionedName = "twirl-api_"+scalaV
         val version = IO.readStream(getClass.getClassLoader.getResourceAsStream("twirl-version"))
-        "io.spray" % crossVersionedName % version from
-          "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/io.spray/%s/%s/jars/twirl-api_%s.jar".format(crossVersionedName, version, scalaV)
+        "io.spray" % crossVersionedName % version
       }
     )
   }

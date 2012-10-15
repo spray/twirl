@@ -18,7 +18,7 @@ object Build extends Build {
   lazy val twirlApi =
     Project("twirl-api", file("twirl-api"))
       .settings(general: _*)
-      .settings(publishing: _*)
+      .settings(apiPublishing: _*)
       .settings(
         libraryDependencies += commonsLang,
         crossScalaVersions  := Seq("2.9.2", "2.10.0-RC1")
@@ -62,7 +62,6 @@ object Build extends Build {
   )
 
   lazy val publishing = seq(
-    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
     publishMavenStyle := false,
     publishTo <<= (version) { version: String =>
       val scalasbt = "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-"
@@ -72,6 +71,22 @@ object Build extends Build {
       val url  = scalasbt      + suffix
 
       Some(Resolver.url(name, new URL(url))(Resolver.ivyStylePatterns))
+    }
+  )
+
+  // We publish the api to our own repository
+  lazy val apiPublishing = seq(
+    publishMavenStyle := true,
+
+    publishTo <<= version { version =>
+      Some {
+        "spray repo" at {
+          // public uri is repo.spray.io, we use an SSH tunnel to the nexus here
+          "http://localhost:42424/content/repositories/" + {
+            if (version.trim.endsWith("SNAPSHOT")) "snapshots/" else "releases/"
+          }
+        }
+      }
     }
   )
 
