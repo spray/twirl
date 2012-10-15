@@ -68,13 +68,13 @@ object TwirlPlugin extends Plugin {
       watch(sourceDirectory in twirlCompile, includeFilter in twirlCompile, excludeFilter in twirlCompile),
 
       libraryDependencies <+= (scalaVersion) { sV =>
-        val scalaV = if (CrossVersion.isStable(sV)) CrossVersion.binaryScalaVersion(sV) else sV
+        val scalaV = binaryScalaVersion(sV)
+        val crossVersionedName = "twirl-api_"+scalaV
         val version = IO.readStream(getClass.getClassLoader.getResourceAsStream("twirl-version"))
-        "io.spray" %% "twirl-api" % version from
-          "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/io.spray/twirl-api_%s/%s/jars/twirl-api_%s.jar".format(scalaV, version, scalaV)
+        "io.spray" % crossVersionedName % version from
+          "http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/io.spray/%s/%s/jars/twirl-api_%s.jar".format(crossVersionedName, version, scalaV)
       }
     )
-
   }
 
   lazy val errorExtensions = Seq(".scala.xml", ".scala.html", ".scala.txt", ".template.scala")
@@ -85,4 +85,11 @@ object TwirlPlugin extends Plugin {
     watchSources <++= (sourceDirKey, filterKey, excludeKey) map descendents
   def descendents(sourceDir: File, filt: FileFilter, excl: FileFilter) =
     sourceDir.descendentsExcept(filt, excl).get
+
+  def binaryScalaVersion(scalaVersion: String): String =
+    if (scalaVersion.contains("-")) scalaVersion // pre-release version
+    else if (scalaVersion.startsWith("2.9")) "2.9.2"
+    else if (scalaVersion.startsWith("2.10")) "2.10"
+    else if (scalaVersion.startsWith("2.11")) "2.11"
+    else throw new IllegalArgumentException("Unsupported Scala version "+scalaVersion)
 }
