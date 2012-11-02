@@ -1,0 +1,7 @@
+Changes since 0.5.4:
+
+ - Support for Scala 2.10.0-RC1
+ - Changed group-id to "io.spray"
+ - Upgraded dependencies
+ - Twirl-api now fetched from "http://repo.spray.io"
+ - Fixed #5: In sbt-twirl don't depend on akka-actor transitively through scala-io
