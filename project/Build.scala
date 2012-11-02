@@ -49,7 +49,7 @@ object Build extends Build {
 
 
   lazy val general = seq(
-    version               := IO.read(file("sbt-twirl/src/main/resources/twirl-version")),
+    version               := IO.read(file("sbt-twirl/src/main/resources/twirl-version")).trim,
     homepage              := Some(new URL("https://github.com/spray/sbt-twirl")),
     organization          := "io.spray",
     organizationHomepage  := Some(new URL("http://spray.io")),
