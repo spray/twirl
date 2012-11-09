@@ -1,6 +1,6 @@
 libraryDependencies ++= Seq(
-    "com.github.scala-incubator.io" %% "scala-io-file" % "0.4.0",
-    "commons-lang"                  %  "commons-lang"  % "2.6"
+    "com.github.scala-incubator.io" %% "scala-io-file"  % "0.4.1-seq",
+    "commons-lang"                  %  "commons-lang"   % "2.6"
 )
 
 scalaVersion := "2.9.2"

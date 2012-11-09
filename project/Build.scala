@@ -21,7 +21,7 @@ object Build extends Build {
       .settings(apiPublishing: _*)
       .settings(
         libraryDependencies += commonsLang,
-        crossScalaVersions  := Seq("2.9.2", "2.10.0-RC1")
+        crossScalaVersions  := Seq("2.9.2", "2.10.0-RC2")
       )
 
   lazy val twirlCompiler =
@@ -68,7 +68,7 @@ object Build extends Build {
       val suffix = if (version.contains("-SNAPSHOT")) "snapshots" else "releases"
 
       val name = "plugin-" + suffix
-      val url  = scalasbt      + suffix
+      val url  = scalasbt + suffix
 
       Some(Resolver.url(name, new URL(url))(Resolver.ivyStylePatterns))
     }
