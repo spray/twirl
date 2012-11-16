@@ -105,6 +105,9 @@ directory are turned into package names for the created template objects. So, if
 ``{project-directory}/src/main/twirl/org/example/`` directory it will have the package ``org.example.html``,
 ``org.example.txt`` or ``org.example.xml``, depending on the file extension.
 
+So, for example, if you'd like to include a template ``{project-directory}/src/main/twirl/org/example/Foo.scala.html``
+from another template you would say ``@org.example.html.Foo()``.
+
 
 Configuration
 =============
