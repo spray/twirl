@@ -22,3 +22,13 @@ trait Appendable[T] {
 
   override def hashCode() = super.hashCode()
 }
+
+object Appendable {
+  implicit def pimpJoin[T <: Appendable[T]](seq: Seq[T]) = new Joinable(seq)
+
+  class Joinable[T <: Appendable[T]](seq: Seq[T]) {
+    def joinWith(separator: T): Seq[T] =
+      if (seq.isEmpty) seq
+      else (Seq(seq.head) /: seq.tail)(_ :+ separator :+ _)
+  }
+}

@@ -20,8 +20,11 @@ object Build extends Build {
       .settings(general: _*)
       .settings(apiPublishing: _*)
       .settings(
-        libraryDependencies += commonsLang,
-        crossScalaVersions  := Seq("2.9.2", "2.10.0-RC2")
+        libraryDependencies ++= Seq(
+          commonsLang,
+          Test.specs
+        ),
+        crossScalaVersions := Seq("2.9.2", "2.10.0-RC2")
       )
 
   lazy val twirlCompiler =
