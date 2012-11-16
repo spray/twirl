@@ -15,9 +15,10 @@
 
 package twirl.compiler
 
-import org.specs2.mutable._
+import org.specs2.mutable.Specification
+import java.io.File
+import twirl.api._
 
-import twirl.api.{Format, Appendable}
 
 object TemplateUtilsSpec extends Specification {
 
@@ -30,61 +31,19 @@ object TemplateUtilsSpec extends Specification {
     "provide a Format API" in {
 
       "HTML for example" in {
-
-        case class Html(text: String) extends Appendable[Html] {
-          val buffer = new StringBuilder(text)
-
-          def +(other: Html) = {
-            buffer.append(other.buffer)
-            this
-          }
-
-          override def toString = buffer.toString
-        }
-
-        object HtmlFormat extends Format[Html] {
-          def raw(text: String) = Html(text)
-
-          def escape(text: String) = Html(text.replace("<", "&lt;"))
-        }
-
         val html = HtmlFormat.raw("<h1>") + HtmlFormat.escape("Hello <world>") + HtmlFormat.raw("</h1>")
-
-        html.toString must be_==("<h1>Hello &lt;world></h1>")
-
+        html.toString === "<h1>Hello &lt;world&gt;</h1>"
       }
 
       "Text for example" in {
-
-        case class Text(text: String) extends Appendable[Text] {
-          val buffer = new StringBuilder(text)
-
-          def +(other: Text) = {
-            buffer.append(other.buffer)
-            this
-          }
-
-          override def toString = buffer.toString
-        }
-
-        object TextFormat extends Format[Text] {
-          def raw(text: String) = Text(text)
-
-          def escape(text: String) = Text(text)
-        }
-
-        val text = TextFormat.raw("<h1>") + TextFormat.escape("Hello <world>") + TextFormat.raw("</h1>")
-
-        text.toString must be_==("<h1>Hello <world></h1>")
-
+        val text = TxtFormat.raw("<h1>") + TxtFormat.escape("Hello <world>") + TxtFormat.raw("</h1>")
+        text.toString === "<h1>Hello <world></h1>"
       }
 
     }
   }
 
   "generate proper packages from the directory structure" in {
-    import java.io.File
-
     val baseDir = new File("twirl-compiler/src/test/templates/")
     def haveTemplateName(templateName: String*) = be_==(templateName) ^^ { fileName: String =>
        TwirlCompiler.generatedFile(
