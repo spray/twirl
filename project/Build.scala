@@ -24,7 +24,7 @@ object Build extends Build {
           commonsLang,
           Test.specs
         ),
-        crossScalaVersions := Seq("2.9.2", "2.10.0-RC2")
+        crossScalaVersions := Seq("2.9.2", "2.10.0-RC3")
       )
 
   lazy val twirlCompiler =
