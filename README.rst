@@ -26,7 +26,7 @@ Installation
 sbt-twirl requires SBT 0.12 or 0.11. Add the following dependency to your ``project/*.sbt`` file
 (e.g. ``project/plugins.sbt``)::
 
-    addSbtPlugin("io.spray" % "sbt-twirl" % "0.6.1")
+    addSbtPlugin("io.spray" % "sbt-twirl" % "0.6.2")
 
 If you are using SBT 0.11.3 you'll have to add an extra resolver::
 
