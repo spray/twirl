@@ -84,8 +84,9 @@ object TwirlPlugin extends Plugin {
 
   def watch(sourceDirKey: SettingKey[File], filterKey: SettingKey[FileFilter], excludeKey: SettingKey[FileFilter]) =
     watchSources <++= (sourceDirKey, filterKey, excludeKey) map descendents
+
   def descendents(sourceDir: File, filt: FileFilter, excl: FileFilter) =
-    sourceDir.descendentsExcept(filt, excl).get
+    sourceDir.descendantsExcept(filt, excl).get
 
   def binaryScalaVersion(scalaVersion: String): String =
     if (scalaVersion.contains("-")) scalaVersion // pre-release version

@@ -24,7 +24,7 @@ object Build extends Build {
           commonsLang,
           Test.specs
         ),
-        crossScalaVersions := Seq("2.9.2", "2.10.1")
+        crossScalaVersions := Seq("2.10.2")
       )
 
   lazy val twirlCompiler =
@@ -47,8 +47,8 @@ object Build extends Build {
       .settings(publishing: _*)
       //.settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
       .settings(
-        Keys.sbtPlugin := true,
-        CrossBuilding.crossSbtVersions := Seq("0.12", "0.11.3", "0.11.2")
+        Keys.sbtPlugin := true
+        // CrossBuilding.crossSbtVersions := Seq("0.12", "0.11.3", "0.11.2")
       )
       .dependsOn(twirlCompiler)
 
@@ -63,7 +63,8 @@ object Build extends Build {
     scalaBinaryVersion   <<= scalaVersion(sV => if (CrossVersion.isStable(sV)) CrossVersion.binaryScalaVersion(sV) else sV),
     scalacOptions         := Seq("-unchecked", "-deprecation", "-encoding", "utf8"),
     description           := "The Play framework Scala template engine, standalone and packaged as an SBT plugin",
-    resolvers             += "typesafe repo" at "http://repo.typesafe.com/typesafe/releases/"
+    resolvers             += "typesafe repo" at "http://repo.typesafe.com/typesafe/releases/",
+    scalaVersion          := "2.10.2"
   )
 
   lazy val publishing = seq(
