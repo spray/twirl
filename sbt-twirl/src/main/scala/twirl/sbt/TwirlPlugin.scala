@@ -72,7 +72,7 @@ object TwirlPlugin extends Plugin {
       libraryDependencies <+= (scalaVersion) { sV =>
         val scalaV = binaryScalaVersion(sV)
         val crossVersionedName = "twirl-api_"+scalaV
-        val version = IO.readStream(getClass.getClassLoader.getResourceAsStream("twirl-version"))
+        val version = IO.readStream(getClass.getClassLoader.getResourceAsStream("twirl-version")).trim
         "io.spray" % crossVersionedName % version
       }
     )
