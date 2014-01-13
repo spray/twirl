@@ -64,7 +64,7 @@ object Build extends Build {
     scalacOptions         := Seq("-unchecked", "-deprecation", "-encoding", "utf8"),
     description           := "The Play framework Scala template engine, standalone and packaged as an SBT plugin",
     resolvers             += "typesafe repo" at "http://repo.typesafe.com/typesafe/releases/",
-    scalaVersion          := "2.10.2"
+    scalaVersion          := "2.10.3"
   )
 
   lazy val publishing = seq(
