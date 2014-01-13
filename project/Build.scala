@@ -24,7 +24,7 @@ object Build extends Build {
           commonsLang,
           Test.specs
         ),
-        crossScalaVersions := Seq("2.9.2", "2.10.1")
+        crossScalaVersions := Seq("2.9.2", "2.10.2")
       )
 
   lazy val twirlCompiler =
@@ -34,10 +34,15 @@ object Build extends Build {
       //.settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
       .settings(
         libraryDependencies ++= Seq(
-          scalaIO,
           Test.specs
         ),
-        libraryDependencies <+= scalaVersion(scalaCompiler)
+        libraryDependencies <++= scalaVersion { v =>
+          Seq(
+            scalaCompiler(v),
+            scalaIO(v)
+          )
+        },
+        scalaVersion := "2.9.2"
       )
       .dependsOn(twirlApi % "test")
 
@@ -45,12 +50,15 @@ object Build extends Build {
     Project("sbt-twirl", file("sbt-twirl"))
       .settings(general: _*)
       .settings(publishing: _*)
+      .settings(net.virtualvoid.sbt.cross.CrossPlugin.crossBuildingSettings: _*)
       //.settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
       .settings(
         Keys.sbtPlugin := true,
-        CrossBuilding.crossSbtVersions := Seq("0.12", "0.11.3", "0.11.2")
+        CrossBuilding.crossSbtVersions := Seq("0.12", "0.13", "0.11.3", "0.11.2"),
+        libraryDependencies <+= version("io.spray" % "twirl-compiler_2.9.2" % _)
       )
-      .dependsOn(twirlCompiler)
+
+      //.dependsOn(twirlCompiler)
 
 
   lazy val general = seq(
@@ -81,7 +89,7 @@ object Build extends Build {
 
   // We publish the api to our own repository
   lazy val apiPublishing = seq(
-    publishMavenStyle := true,
+    publishMavenStyle := false,
 
     publishTo <<= version { version =>
       Some {

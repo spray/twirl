@@ -532,6 +532,15 @@ object """ :+ name :+ """ extends BaseScalaTemplate[""" :+ resultType :+ """,For
         type DefDef = PresentationCompiler.global.DefDef
         type TypeDef = PresentationCompiler.global.TypeDef
 
+        /** Adds isByNameParam to Modifiers in 2.10 */
+        trait HasIsByNameParam { def isByNameParam: Boolean }
+        implicit def addFlag(global: PresentationCompiler.global.type): { def Flag: {def BYNAMEPARAM: Long} } =
+          throw new UnsupportedOperationException("should never be called")
+        implicit def addIsByNameParam(mod: PresentationCompiler.global.Modifiers): HasIsByNameParam =
+          new HasIsByNameParam {
+            def isByNameParam: Boolean = mod.hasFlag(PresentationCompiler.global.Flag.BYNAMEPARAM)
+          }
+
         def filterType(t: String) = t match {
           case vararg if vararg.startsWith("_root_.scala.<repeated>") => vararg.replace("_root_.scala.<repeated>", "Array")
           case synthetic if synthetic.contains("<synthetic>") => synthetic.replace("<synthetic>", "")
