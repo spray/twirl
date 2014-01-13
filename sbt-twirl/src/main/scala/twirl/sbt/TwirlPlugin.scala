@@ -72,7 +72,7 @@ object TwirlPlugin extends Plugin {
       libraryDependencies <+= (scalaVersion) { sV =>
         val scalaV = binaryScalaVersion(sV)
         val crossVersionedName = "twirl-api_"+scalaV
-        val version = IO.readStream(getClass.getClassLoader.getResourceAsStream("twirl-version")).trim()
+        val version = IO.readStream(getClass.getClassLoader.getResourceAsStream("twirl-version")).trim
         "io.spray" % crossVersionedName % version
       }
     )
@@ -84,6 +84,7 @@ object TwirlPlugin extends Plugin {
 
   def watch(sourceDirKey: SettingKey[File], filterKey: SettingKey[FileFilter], excludeKey: SettingKey[FileFilter]) =
     watchSources <++= (sourceDirKey, filterKey, excludeKey) map descendents
+
   def descendents(sourceDir: File, filt: FileFilter, excl: FileFilter) =
     sourceDir.descendantsExcept(filt, excl).get
 

@@ -13,7 +13,6 @@ object Build extends Build {
     Project("twirl", file("."))
       .settings(general: _*)
       .settings(noPublishing: _*)
-      .aggregate(twirlCompiler, sbtTwirl)
 
   lazy val twirlApi =
     Project("twirl-api", file("twirl-api"))
@@ -24,7 +23,7 @@ object Build extends Build {
           commonsLang,
           Test.specs
         ),
-        crossScalaVersions := Seq("2.9.2", "2.10.2")
+        crossScalaVersions := Seq("2.9.2", "2.10.3")
       )
 
   lazy val twirlCompiler =
@@ -42,11 +41,11 @@ object Build extends Build {
             scalaIO(v)
           )
         },
-        scalaVersion := "2.9.2"
+        scalaVersion <<= scalaVersion in LocalProject("sbt-twirl")
       )
       .dependsOn(twirlApi % "test")
 
-  lazy val sbtTwirl =
+  lazy val sbtTwirl: Project =
     Project("sbt-twirl", file("sbt-twirl"))
       .settings(general: _*)
       .settings(publishing: _*)
@@ -54,11 +53,10 @@ object Build extends Build {
       //.settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
       .settings(
         Keys.sbtPlugin := true,
-        CrossBuilding.crossSbtVersions := Seq("0.12", "0.13", "0.11.3", "0.11.2"),
-        libraryDependencies <+= version("io.spray" % "twirl-compiler_2.9.2" % _)
+        CrossBuilding.crossSbtVersions := Seq("0.12", "0.13")
       )
-
-      //.dependsOn(twirlCompiler)
+      .dependsOn(twirlCompiler)
+      .aggregate(twirlCompiler)
 
 
   lazy val general = seq(
@@ -71,7 +69,8 @@ object Build extends Build {
     scalaBinaryVersion   <<= scalaVersion(sV => if (CrossVersion.isStable(sV)) CrossVersion.binaryScalaVersion(sV) else sV),
     scalacOptions         := Seq("-unchecked", "-deprecation", "-encoding", "utf8"),
     description           := "The Play framework Scala template engine, standalone and packaged as an SBT plugin",
-    resolvers             += "typesafe repo" at "http://repo.typesafe.com/typesafe/releases/"
+    resolvers             += "typesafe repo" at "http://repo.typesafe.com/typesafe/releases/",
+    scalaVersion          := "2.10.3"
   )
 
   lazy val publishing = seq(
