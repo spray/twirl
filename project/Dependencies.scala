@@ -5,7 +5,7 @@ object Dependencies {
   val scalaIO     = "com.github.scala-incubator.io" %% "scala-io-file"  % "0.4.2"
 
   object Test {
-    val specs = "org.specs2" %% "specs2" % "1.12.3" % "test"
+    val specs = "org.specs2" %% "specs2" % "2.3.7" % "test"
   }
 
   def scalaCompiler(version: String) = "org.scala-lang" % "scala-compiler" % version

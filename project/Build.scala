@@ -23,8 +23,7 @@ object Build extends Build {
         libraryDependencies ++= Seq(
           commonsLang,
           Test.specs
-        ),
-        crossScalaVersions := Seq("2.10.2")
+        )
       )
 
   lazy val twirlCompiler =
@@ -46,10 +45,7 @@ object Build extends Build {
       .settings(general: _*)
       .settings(publishing: _*)
       //.settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
-      .settings(
-        Keys.sbtPlugin := true
-        // CrossBuilding.crossSbtVersions := Seq("0.12", "0.11.3", "0.11.2")
-      )
+      .settings(Keys.sbtPlugin := true)
       .dependsOn(twirlCompiler)
 
 
@@ -60,11 +56,11 @@ object Build extends Build {
     organizationHomepage  := Some(new URL("http://spray.io")),
     startYear             := Some(2012),
     licenses              := Seq("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-    scalaBinaryVersion   <<= scalaVersion(sV => if (CrossVersion.isStable(sV)) CrossVersion.binaryScalaVersion(sV) else sV),
     scalacOptions         := Seq("-unchecked", "-deprecation", "-encoding", "utf8"),
     description           := "The Play framework Scala template engine, standalone and packaged as an SBT plugin",
     resolvers             += "typesafe repo" at "http://repo.typesafe.com/typesafe/releases/",
-    scalaVersion          := "2.10.2"
+    scalaVersion          := "2.10.3",
+    scalaBinaryVersion    <<= scalaVersion(sV => if (CrossVersion.isScalaApiCompatible(sV)) CrossVersion.binaryScalaVersion(sV) else sV)
   )
 
   lazy val publishing = seq(
@@ -81,7 +77,7 @@ object Build extends Build {
   )
 
   // We publish the api to our own repository
-  lazy val apiPublishing = seq(
+  lazy val apiPublishing = Seq(
     publishMavenStyle := true,
 
     publishTo <<= version { version =>
@@ -96,7 +92,7 @@ object Build extends Build {
     }
   )
 
-  lazy val noPublishing = seq(
+  lazy val noPublishing = Seq(
     publish := (),
     publishLocal := ()
   )

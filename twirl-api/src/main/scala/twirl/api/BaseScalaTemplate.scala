@@ -19,7 +19,7 @@ case class BaseScalaTemplate[T <: Appendable[T], F <: Format[T]](format: F) {
 
   def _display_(o: Any)(implicit m: Manifest[T]): T = {
     o match {
-      case escaped if escaped != null && escaped.getClass == m.erasure => escaped.asInstanceOf[T]
+      case escaped if escaped != null && escaped.getClass == m.runtimeClass => escaped.asInstanceOf[T]
       case () => format.raw("")
       case None => format.raw("")
       case Some(v) => _display_(v)
