@@ -25,7 +25,7 @@ import sbt._
  */
 object Utilities {
 
-  def colorLogger(state: State): Logger = colorLogger(CommandSupport.logger(state))
+//  def colorLogger(state: State): Logger = colorLogger(CommandStrings.logger(state))
 
   def colorLogger(logger: Logger): Logger = new Logger {
     import scala.Console.{RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE}

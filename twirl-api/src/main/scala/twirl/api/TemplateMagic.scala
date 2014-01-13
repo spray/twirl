@@ -28,9 +28,7 @@ object TemplateMagic {
   // --- IF
 
   implicit def iterableToBoolean(x: Iterable[_]) = x != null && !x.isEmpty
-
   implicit def optionToBoolean(x: Option[_]) = x != null && x.isDefined
-
   implicit def stringToBoolean(x: String) = x != null && !x.isEmpty
 
   // --- JAVA
