@@ -16,6 +16,7 @@
 package twirl.api
 
 case class BaseScalaTemplate[T <: Appendable[T], F <: Format[T]](format: F) {
+  import ExtraImplicits._
 
   def _display_(o: Any)(implicit m: Manifest[T]): T = {
     o match {
