@@ -26,7 +26,7 @@ Installation
 sbt-twirl requires SBT 0.12 or 0.11. Add the following dependency to your ``project/*.sbt`` file
 (e.g. ``project/plugins.sbt``)::
 
-    addSbtPlugin("io.spray" % "sbt-twirl" % "0.6.1")
+    addSbtPlugin("io.spray" % "sbt-twirl" % "0.7.0")
 
 If you are using SBT 0.11.3 you'll have to add an extra resolver::
 
@@ -36,7 +36,7 @@ If you are using SBT 0.11.3 you'll have to add an extra resolver::
 
 Then, in your ``build.sbt``::
 
-    seq(Twirl.settings: _*)
+    Twirl.settings
 
 If you use SBTs full-configuration you need to::
 
@@ -165,7 +165,8 @@ Just like the `Play Framework`_ `Scala template engine`_ *Twirl* is licensed und
 Credits
 =======
 
-All credits are to go to the Play developers who devised the template language and provided its implementation!
+All credits are to go to the Play developers who devised the template language and provided its implementation! Thanks
+to @4lex1v for updating twirl to the latest upstream version which supports sbt 0.13.
 
 
 Patch Policy
