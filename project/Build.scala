@@ -92,7 +92,7 @@ object Build extends Build {
 
   // We publish the api to our own repository
   lazy val apiPublishing = seq(
-    publishMavenStyle := false,
+    publishMavenStyle := true,
 
     publishTo <<= version { version =>
       Some {
