@@ -16,7 +16,7 @@
 package twirl.api
 
 trait Format[T <: Appendable[T]] {
+  type Appendable = T
   def raw(text: String): T
-
   def escape(text: String): T
 }

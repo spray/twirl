@@ -25,7 +25,7 @@ object TwirlPlugin extends Plugin {
 
   object Twirl extends TwirlKeys {
 
-    def settings = seq(
+    def settings = Seq(
       twirlTemplatesTypes := Map(
         "html" -> TemplateType("twirl.api.Html", "twirl.api.HtmlFormat"),
         "txt"  -> TemplateType("twirl.api.Txt", "twirl.api.TxtFormat"),
@@ -44,7 +44,6 @@ object TwirlPlugin extends Plugin {
         sourceDirectory in twirlCompile,
         target in twirlCompile,
         twirlTemplatesTypes,
-        twirlSourceCharset,
         twirlImports,
         streams
       ) map TemplateCompiler.compile,

@@ -41,7 +41,11 @@ object Build extends Build {
             scalaIO(v)
           )
         },
-        scalaVersion <<= scalaVersion in LocalProject("sbt-twirl")
+        scalaVersion <<= scalaVersion in LocalProject("sbt-twirl"),
+        // add scala-XXX versioned source directories for making backporting easier
+        unmanagedSourceDirectories in Compile <+= (sourceDirectory in Compile, scalaBinaryVersion) {
+          (base, version) => base / ("scala-"+version)
+        }
       )
       .dependsOn(twirlApi % "test")
 

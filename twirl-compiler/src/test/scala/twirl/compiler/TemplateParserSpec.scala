@@ -16,6 +16,7 @@
 package twirl.compiler
 
 import org.specs2.mutable._
+import scalax.io.Resource
 
 object TemplateParserSpec extends Specification {
 
@@ -33,32 +34,30 @@ object TemplateParserSpec extends Specification {
       parser.parser(get(templateName))
     }
 
-    def failAt(message: String, line: Int, column: Int): PartialFunction[parser.ParseResult[TwirlCompiler.Template], Boolean] = {
-      case parser.NoSuccess(msg, rest) => {
-        message == msg && rest.pos.line == line && rest.pos.column == column
-      }
+    def parseString(template: String) = parser.parser(new CharSequenceReader(template))
+
+    def parseStringSuccess(template: String) = parseString(template) must beLike {
+      case parser.Success(_, rest) if rest.atEnd => ok
     }
 
     "succeed for" in {
 
       "static.scala.html" in {
-        parse("static.scala.html") must beLike({
-          case parser.Success(_, rest) => if (rest.atEnd) ok else ko
-        })
+        parse("static.scala.html") must beLike({ case parser.Success(_, rest) => if (rest.atEnd) ok else ko })
       }
 
       "simple.scala.html" in {
-        parse("simple.scala.html") must beLike({
-          case parser.Success(_, rest) => if (rest.atEnd) ok else ko
-        })
+        parse("simple.scala.html") must beLike({ case parser.Success(_, rest) => if (rest.atEnd) ok else ko })
       }
 
       "complicated.scala.html" in {
-        parse("complicated.scala.html") must beLike({
-          case parser.Success(_, rest) => if (rest.atEnd) ok else ko
-        })
+        parse("complicated.scala.html") must beLike({ case parser.Success(_, rest) => if (rest.atEnd) ok else ko })
       }
 
+      "brackets in strings" in {
+        "open" in parseStringSuccess("""@foo("(")""")
+        "close" in parseStringSuccess("""@foo(")@")""")
+      }
     }
 
     "fail for" in {
@@ -81,14 +80,10 @@ object TemplateParserSpec extends Specification {
 
       "invalidAt.scala.html" in {
         parse("invalidAt.scala.html") must beLike({
-          case parser.NoSuccess(msg, rest) => {
+          case parser.NoSuccess(msg, rest) =>
             if (msg.contains("identifier' expected but `<' found") && rest.pos.line == 5 && rest.pos.column == 6) ok else ko
-          }
         })
       }
-
     }
-
   }
-
 }

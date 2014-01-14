@@ -19,51 +19,62 @@ import org.specs2.mutable.Specification
 import java.io.File
 import twirl.api._
 
-
 object TemplateUtilsSpec extends Specification {
 
   "Templates" should {
-
     "provide a HASH util" in {
-      Hash("itShouldWork".getBytes) must be_==("31c0c4e0e142fe9b605fff44528fedb3dd8ae254")
+      Hash("itShouldWork".getBytes, "") must be_==("31c0c4e0e142fe9b605fff44528fedb3dd8ae254")
     }
 
     "provide a Format API" in {
-
       "HTML for example" in {
+        import twirl.compiler.Helper.{Html, HtmlFormat}
         val html = HtmlFormat.raw("<h1>") + HtmlFormat.escape("Hello <world>") + HtmlFormat.raw("</h1>")
-        html.toString === "<h1>Hello &lt;world&gt;</h1>"
+        html.toString must be_==("<h1>Hello &lt;world></h1>")
       }
 
       "Text for example" in {
-        val text = TxtFormat.raw("<h1>") + TxtFormat.escape("Hello <world>") + TxtFormat.raw("</h1>")
-        text.toString === "<h1>Hello <world></h1>"
+
+        case class Text(text: String) extends Appendable[Text] {
+          val buffer = new StringBuilder(text)
+          def +(other: Text) = {
+            buffer.append(other.buffer)
+            this
+          }
+          override def toString = buffer.toString
+        }
+
+        object TextFormat extends Format[Text] {
+          def raw(text: String) = Text(text)
+          def escape(text: String) = Text(text)
+        }
+
+        val text = TextFormat.raw("<h1>") + TextFormat.escape("Hello <world>") + TextFormat.raw("</h1>")
+        text.toString must be_==("<h1>Hello <world></h1>")
       }
 
+      "generate proper packages from the directory structure" in {
+        val baseDir = new File("twirl-compiler/src/test/templates/")
+        def haveTemplateName(templateName: String*) = be_==(templateName) ^^ { fileName: String =>
+          TwirlCompiler.generatedFile(
+            template = new File(baseDir, fileName),
+            sourceDirectory = baseDir,
+            generatedDirectory = new File("generated-templates")
+          )._1.toSeq
+        }
+
+        "on the template dir root" in {
+          "simple.scala.html" must haveTemplateName("html", "simple")
+        }
+
+        "one level deep" in {
+          "example/simple.scala.html" must haveTemplateName("example", "html", "simple")
+        }
+
+        "several levels deep" in {
+          "com/example/simple.scala.html" must haveTemplateName("com", "example", "html", "simple")
+        }
+      }
     }
   }
-
-  "generate proper packages from the directory structure" in {
-    val baseDir = new File("twirl-compiler/src/test/templates/")
-    def haveTemplateName(templateName: String*) = be_==(templateName) ^^ { fileName: String =>
-       TwirlCompiler.generatedFile(
-         template = new File(baseDir, fileName),
-         sourceDirectory = baseDir,
-         generatedDirectory = new File("generated-templates")
-       )._1.toSeq
-    }
-
-    "on the template dir root" in {
-      "simple.scala.html" must haveTemplateName("html", "simple")
-    }
-
-    "one level deep" in {
-      "example/simple.scala.html" must haveTemplateName("example", "html", "simple")
-    }
-
-    "several levels deep" in {
-      "com/example/simple.scala.html" must haveTemplateName("com", "example", "html", "simple")
-    }
-  }
-
 }
