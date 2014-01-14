@@ -1,0 +1,9 @@
+twirl-api and the rest has to published separately and will be published to different servers.
+
+# publish api for Scala 2.9.2 and 2.10
+> project twirl-api
+> + publish
+
+# publish plugin and compiler for sbt 0.12 and 0.13
+> project sbt-twirl
+> ^ publish
