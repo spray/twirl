@@ -14,6 +14,20 @@ object Build extends Build {
       .settings(general: _*)
       .settings(noPublishing: _*)
 
+  /*
+   * Add scala-xml dependency when needed (for Scala 2.11 and newer) in a robust way
+   * This mechanism supports cross-version publishing
+   */
+  private def scalaXmlModule: Setting[Seq[sbt.ModuleID]] = libraryDependencies := {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      // if scala 2.11+ is used, add dependency on scala-xml module
+      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+        libraryDependencies.value :+ "org.scala-lang.modules" %% "scala-xml" % "1.0.0"
+      case _ =>
+        libraryDependencies.value
+    }
+  }
+
   lazy val twirlApi =
     Project("twirl-api", file("twirl-api"))
       .settings(general: _*)
@@ -23,6 +37,7 @@ object Build extends Build {
           commonsLang,
           Test.specs
         ),
+        scalaXmlModule,
         crossScalaVersions := Seq("2.9.2", "2.10.3")
       )
 
