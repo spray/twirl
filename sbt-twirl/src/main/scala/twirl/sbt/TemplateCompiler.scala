@@ -20,7 +20,6 @@ package twirl.sbt
 
 import sbt._
 import xsbti.Severity.Error
-import java.io.File
 import twirl.compiler._
 import collection.Seq
 
@@ -30,7 +29,8 @@ object TemplateCompiler {
               generatedDir: File,
               templateTypes: PartialFunction[String, TemplateType],
               additionalImports: Seq[String],
-              streams: Keys.TaskStreams) = {
+              streams: Keys.TaskStreams,
+              logRecompilation: (File, File) => Unit) = {
     try {
       IO.createDirectory(generatedDir)
 
@@ -41,13 +41,20 @@ object TemplateCompiler {
 
       for ((templateFile, extension, TemplateType(resultType, formatterType)) <- templates) {
         val addImports = additionalImports.map("import " + _.replace("%format%", extension)).mkString("\n")
-        TwirlCompiler.compile(templateFile, sourceDirectory, generatedDir, formatterType, addImports)
+        TwirlCompiler.compile(templateFile, sourceDirectory, generatedDir, formatterType, addImports, logRecompilation)
       }
 
       (generatedDir ** "*.template.scala").get.map(_.getAbsoluteFile)
 
     } catch handleTemplateCompilationError
   }
+
+  def logRecompilation(streams: Keys.TaskStreams, sourceDirectory: File)(templateFile: File, targetFile: File): Unit =
+    streams.log.info {
+      val skipChars = sourceDirectory.toString.length
+      "Compiling twirl template ..." + templateFile.toString.substring(skipChars) +
+        " to .../" + targetFile.getName
+    }
 
   private def cleanUp(generatedDir: File) {
     (generatedDir ** "*.template.scala").get.foreach {

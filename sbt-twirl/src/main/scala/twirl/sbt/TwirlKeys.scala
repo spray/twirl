@@ -15,7 +15,6 @@
 
 package twirl.sbt
 
-import java.io.File
 import sbt._
 import java.nio.charset.Charset
 
@@ -31,4 +30,9 @@ trait TwirlKeys {
   val twirlCompile = TaskKey[Seq[File]]("twirl-compile", "Compile twirl templates into scala source files")
 
   val twirlReportErrors = TaskKey[inc.Analysis]("twirl-report-errors", "Report twirl template errors")
+
+  val twirlRecompilationLogger =
+    TaskKey[(File, File) => Unit](
+      "twirl-recompilation-logger",
+      "A function to call for every (sourceFile, targetFile) pair that is being recompiled with twirl.")
 }

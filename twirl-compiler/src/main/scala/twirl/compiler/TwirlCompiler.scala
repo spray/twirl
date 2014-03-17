@@ -182,10 +182,12 @@ object TwirlCompiler {
   case class Block(whitespace: String, args: Option[PosString], content: Seq[TemplateTree]) extends ScalaExpPart with Positional
   case class Value(ident: PosString, block: Block) extends Positional
 
-  def compile(source: File, sourceDirectory: File, generatedDirectory: File, formatterType: String, additionalImports: String = "") = {
+  def compile(source: File, sourceDirectory: File, generatedDirectory: File,
+              formatterType: String, additionalImports: String = "", logRecompilation: (File, File) => Unit = (_, _) => ()) = {
     val resultType = formatterType + ".Appendable"
     val (templateName, generatedSource) = generatedFile(source, sourceDirectory, generatedDirectory)
     if (generatedSource.needRecompilation(additionalImports)) {
+      logRecompilation(source, generatedSource.file)
       val generated = parseAndGenerateCode(templateName, Path(source).byteArray, source.getAbsolutePath, resultType, formatterType, additionalImports)
 
       Path(generatedSource.file).write(generated.toString)

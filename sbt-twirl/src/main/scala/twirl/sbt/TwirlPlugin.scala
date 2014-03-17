@@ -18,7 +18,6 @@ package twirl.sbt
 import sbt._
 import Keys._
 
-import java.io.File
 import java.nio.charset.Charset
 
 object TwirlPlugin extends Plugin {
@@ -40,12 +39,16 @@ object TwirlPlugin extends Plugin {
 
       twirlSourceCharset := Charset.forName("UTF8"),
 
+      twirlRecompilationLogger in Global <<=
+        (streams, sourceDirectory in twirlCompile) map (TemplateCompiler.logRecompilation),
+
       twirlCompile <<= (
         sourceDirectory in twirlCompile,
         target in twirlCompile,
         twirlTemplatesTypes,
         twirlImports,
-        streams
+        streams,
+        twirlRecompilationLogger
       ) map TemplateCompiler.compile,
 
       (sourceGenerators in Compile) <+= twirlCompile,

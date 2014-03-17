@@ -132,6 +132,10 @@ sbt-twirl currently offers the following customization options:
 2. ``twirlSourceCharset = SettingKey[Charset]``: lets you specify the `java.nio.charset.Charset` to use when reading
    twirl template sources and writing their corresponding ``.scala`` files. The default value is the ``UTF-8`` charset.
 
+3. ``twirlRecompilationLogger = TaskKey[(File, File) => Unit]``: lets you specify a custom logging function to call when
+   one twirl file is being recompiled. For each file that needs recompilation, the function is invoked with the source
+   and target file. Per default, one line is logged per file. E.g. to switch off logging completely you can use
+   a setting ``Twirl.twirlRecompilationLogger := ((_, _) => ())``.
 
 Example
 =======
