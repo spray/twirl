@@ -1,0 +1,8 @@
+This release incorporates all changes in the upstream play template compiler that accumulated since the
+original extraction in 2012. Most notably, twirl now supports sbt 0.13 in addition to sbt 0.12! Also,
+several issues that still plagued the twirl version but that were fixed in play should now be fixed.
+
+Others:
+  * A new setting `twirlRecompilationLogger` allows to customize the logging behavior of the sbt-twirl plugin.
+
+Note: You need to add `resolvers += "spray repo" at "http://repo.spray.io"` to your `plugins.sbt`.

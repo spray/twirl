@@ -29,8 +29,10 @@ object Build extends Build {
   lazy val twirlCompiler =
     Project("twirl-compiler", file("twirl-compiler"))
       .settings(general: _*)
-      .settings(publishing: _*)
-      //.settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
+      // this doesn't work any more because twirl-compiler doesn't seem to be auto-imported to
+      // bintray
+      //.settings(publishing: _*)
+      .settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
       .settings(
         resolvers += "repo.spray.io" at "http://repo.spray.io",
         libraryDependencies ++= Seq(
@@ -53,9 +55,9 @@ object Build extends Build {
   lazy val sbtTwirl: Project =
     Project("sbt-twirl", file("sbt-twirl"))
       .settings(general: _*)
-      .settings(publishing: _*)
+      //.settings(publishing: _*)
       .settings(net.virtualvoid.sbt.cross.CrossPlugin.crossBuildingSettings: _*)
-      //.settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
+      .settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
       .settings(
         Keys.sbtPlugin := true,
         CrossBuilding.crossSbtVersions := Seq("0.12", "0.13")
