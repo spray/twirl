@@ -23,7 +23,7 @@ portions of the SBT plugin are nothing but verbatim copies of the respective cod
 Installation
 ============
 
-sbt-twirl requires SBT 0.13, 0.12, or 0.11.3. Add the following dependency to your ``project/*.sbt`` file
+sbt-twirl requires SBT 0.13 or 0.12. Add the following dependency to your ``project/*.sbt`` file
 (e.g. ``project/plugins.sbt``)::
 
     // needed because sbt-twirl depends on twirl-compiler which is only available
