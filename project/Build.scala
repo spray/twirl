@@ -32,6 +32,7 @@ object Build extends Build {
       .settings(publishing: _*)
       //.settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
       .settings(
+        resolvers += "repo.spray.io" at "http://repo.spray.io",
         libraryDependencies ++= Seq(
           Test.specs
         ),
