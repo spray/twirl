@@ -20,10 +20,11 @@ object Build extends Build {
       .settings(apiPublishing: _*)
       .settings(
         libraryDependencies ++= Seq(
-          commonsLang,
-          Test.specs
+          commonsLang
         ),
-        crossScalaVersions := Seq("2.9.2", "2.10.3")
+        libraryDependencies <++= scalaVersion(scalaXml),
+        libraryDependencies <+= scalaVersion(specs2),
+        crossScalaVersions := Seq("2.9.2", "2.10.3", "2.11.0-RC3")
       )
 
   lazy val twirlCompiler =
@@ -35,13 +36,11 @@ object Build extends Build {
       .settings(apiPublishing: _*) // use this to publish to repo.spray.io as well
       .settings(
         resolvers += "repo.spray.io" at "http://repo.spray.io",
-        libraryDependencies ++= Seq(
-          Test.specs
-        ),
         libraryDependencies <++= scalaVersion { v =>
           Seq(
             scalaCompiler(v),
-            scalaIO(v)
+            scalaIO(v),
+            specs2(v)
           )
         },
         scalaVersion <<= scalaVersion in LocalProject("sbt-twirl"),
