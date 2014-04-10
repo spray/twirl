@@ -24,7 +24,7 @@ object Build extends Build {
         ),
         libraryDependencies <++= scalaVersion(scalaXml),
         libraryDependencies <+= scalaVersion(specs2),
-        crossScalaVersions := Seq("2.9.2", "2.10.3", "2.11.0-RC3")
+        crossScalaVersions := Seq("2.9.3", "2.10.4", "2.11.0-RC4")
       )
 
   lazy val twirlCompiler =
@@ -76,7 +76,7 @@ object Build extends Build {
     scalacOptions         := Seq("-unchecked", "-deprecation", "-encoding", "utf8"),
     description           := "The Play framework Scala template engine, standalone and packaged as an SBT plugin",
     resolvers             += "typesafe repo" at "http://repo.typesafe.com/typesafe/releases/",
-    scalaVersion          := "2.10.3"
+    scalaVersion          := "2.10.4"
   )
 
   lazy val publishing = seq(
