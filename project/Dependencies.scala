@@ -9,7 +9,7 @@ object Dependencies {
     case _ => "com.github.scala-incubator.io" %% "scala-io-file"  % "0.4.2"
   }
   def specs2(scalaVersion: String) = scalaVersion match {
-    case x if x startsWith "2.11" => "org.specs2" %% "specs2-core" % "2.3.10" % "test"
+    case x if x startsWith "2.11" => "org.specs2" %% "specs2-core" % "2.3.11" % "test"
     case _ => "org.specs2" %% "specs2" % "1.12.3" % "test"
   }
   def scalaXml(scalaVersion: String) =
