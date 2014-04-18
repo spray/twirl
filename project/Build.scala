@@ -24,7 +24,7 @@ object Build extends Build {
         ),
         libraryDependencies <++= scalaVersion(scalaXml),
         libraryDependencies <+= scalaVersion(specs2),
-        crossScalaVersions := Seq("2.9.3", "2.10.4", "2.11.0-RC4")
+        crossScalaVersions := Seq("2.9.3", "2.10.4", "2.11.0")
       )
 
   lazy val twirlCompiler =
