@@ -2,6 +2,13 @@
  Twirl
 #######
 
+**Note:**
+
+**Twirl has moved** `back home to play`_ **where all future versions will live. The new
+official version only supports sbt >= 0.13.5. If you depend on an older version of sbt read on, otherwise, you will probably
+be better off directly heading over to the new repository.**
+
+
 *Twirl* is the `Play Framework`_ `Scala template engine`_, repackaged for stand-alone use.
 This project provides an `SBT`_ plugin that lets you use *Twirl* in your Scala_ applications without any additional
 dependencies on the `Play Framework`_.
@@ -19,6 +26,7 @@ compilation (via SBTs ``~`` operator) as well as hot reloading via `sbt-revolver
 portions of the SBT plugin are nothing but verbatim copies of the respective code pieces from the
 `Play Framework Repository`_. All credits and copyrights for these belong to Play framework team.
 
+.. _`back home to play`: https://github.com/playframework/twirl
 
 Installation
 ============
